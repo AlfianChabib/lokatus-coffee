@@ -1,9 +1,9 @@
-import Canvas from "@/components/base/Canvas";
+import QuoteResult from "@/components/quote/QuoteResult";
 
-export default function page() {
+export default async function Page() {
   return (
-    <div>
-      <Canvas />
+    <div className="flex w-full max-w-xl">
+      <QuoteResult />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Bellefair } from "next/font/google";
 import "./globals.css";
+import TanstackProviders from "@/components/providers/TanstackProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${bellefair.variable} antialiased`}>
-        {children}
+        <TanstackProviders>{children}</TanstackProviders>
       </body>
     </html>
   );
