@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function page() {
   return (
-    <div className="flex min-h-screen w-full max-w-xl flex-col items-center justify-stretchcenter bg-[url('/landing.png')] bg-cover bg-center font-bellefair">
+    <div className="flex min-h-screen w-full max-w-md flex-col items-center justify-stretch bg-[url('/landing.png')] bg-cover bg-center font-bellefair">
       <div className="justify-betwee z-20 grid w-full flex-1">
         <div className="flex justify-center">
           <h1 className="pt-16 text-4xl font-semibold text-white">

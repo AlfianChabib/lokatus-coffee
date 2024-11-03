@@ -10,6 +10,7 @@ import auth from "./auth";
 import quote from "./quote";
 import { serveStatic } from "hono/serve-static";
 import fs from "node:fs";
+import { HTTPException } from "hono/http-exception";
 
 const app = new Hono().basePath("/api");
 
@@ -19,13 +20,12 @@ app.use("*", requestId());
 app.use("*", secureHeaders({ xFrameOptions: false, xXssProtection: false }));
 app.use(prettyJSON());
 app.use(logger());
-
-app.use(async (c, next) => {
-  await next();
-  if (c.error) {
-    console.error(c.error);
-    return c.json({ message: c.error.message }, 500);
+app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
+app.onError((err, c) => {
+  if (err instanceof HTTPException) {
+    return c.json({ success: false, message: err.message }, err.status);
   }
+  return c.json({ success: false, message: "Internal Server Error" }, 500);
 });
 
 app.use(
@@ -39,6 +39,7 @@ app.use(
     },
   }),
 );
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routers = app.route("/auth", auth).route("/quote", quote);
 

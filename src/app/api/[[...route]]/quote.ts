@@ -1,9 +1,9 @@
 import prisma from "@/lib/prisma";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { getQuoteSchema, postQuoteSchema } from "@/validation/quote.validation";
 import { zValidator } from "@hono/zod-validator";
 import { getQuote } from "@/services/server/quote.service";
+import { errorHandler } from "@/common/server/error-handler";
 
 const quote = new Hono()
   .get("/", zValidator("query", getQuoteSchema), async (c) => {
@@ -13,8 +13,7 @@ const quote = new Hono()
 
       return c.json({ message: "Hello World", data: quote }, 200);
     } catch (error) {
-      console.error(error);
-      throw new HTTPException(400, { message: "Invalid request body" });
+      throw errorHandler(error);
     }
   })
   .post("/", zValidator("json", postQuoteSchema), async (c) => {
@@ -25,13 +24,9 @@ const quote = new Hono()
         data: { author, content, mood },
       });
 
-      return c.json(
-        { message: "Quote created successfully", data: quote },
-        201,
-      );
+      return c.json({ message: "Quote created successfully", data: quote }, 201);
     } catch (error) {
-      console.error(error);
-      throw new HTTPException(400, { message: "Invalid request body" });
+      throw errorHandler(error);
     }
   });
 
