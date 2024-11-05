@@ -47,3 +47,11 @@ model Background {
 
   @@map("backgrounds")
 }
+
+model Passkey {
+  id        Int      @id @unique @default(autoincrement())
+  key       String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("passkeys")
+}

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const pathname = req.nextUrl.pathname;
-  const searchParams = req.nextUrl.searchParams;
+  const { pathname, searchParams } = req.nextUrl;
 
   if (pathname.startsWith("/quote")) {
     console.log(searchParams.get("query"));

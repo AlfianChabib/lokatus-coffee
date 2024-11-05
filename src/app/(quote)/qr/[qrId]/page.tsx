@@ -1,4 +1,9 @@
+import { redirect } from "next/navigation";
+
 export default function page({ params }: { params: { qrId: string } }) {
-  console.log(params);
-  return <div>page</div>;
+  if (params.qrId === process.env.QR_CODE_SECRET) {
+    redirect("/quote");
+  } else {
+    redirect("/");
+  }
 }

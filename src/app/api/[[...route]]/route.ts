@@ -8,11 +8,13 @@ import { secureHeaders } from "hono/secure-headers";
 import { csrf } from "hono/csrf";
 import auth from "./auth";
 import quote from "./quote";
+import admin from "./admin";
 import { serveStatic } from "hono/serve-static";
 import fs from "node:fs";
 import { HTTPException } from "hono/http-exception";
+import { Bindings, Variables } from "@/types/server";
 
-const app = new Hono().basePath("/api");
+const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().basePath("/api");
 
 app.use("*", cors({ origin: "http://localhost:3000" }));
 app.use("*", csrf({ origin: "http://localhost:3000" }));
@@ -41,7 +43,7 @@ app.use(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const routers = app.route("/auth", auth).route("/quote", quote);
+const routers = app.route("/auth", auth).route("/quote", quote).route("/admin", admin);
 
 export const GET = handle(app);
 export const POST = handle(app);

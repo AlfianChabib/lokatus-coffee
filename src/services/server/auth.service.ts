@@ -16,7 +16,7 @@ export const login = async (payload: LoginSchema, c: Context) => {
   const isPasswordCorrect = comparePassword(payload.password, user.password);
   if (!isPasswordCorrect) throw new HTTPException(400, { message: "Invalid username or password" });
 
-  const token = await signToken({ username: user.username, role: user.role }, TOKEN_JWT_SECRET);
+  const token = signToken({ username: user.username, role: user.role }, TOKEN_JWT_SECRET);
   setCookie(c, "token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
