@@ -25,7 +25,7 @@ app.use(logger());
 app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
-    return c.json({ success: false, message: err.message }, err.status);
+    return err.getResponse();
   }
   return c.json({ success: false, message: "Internal Server Error" }, 500);
 });
