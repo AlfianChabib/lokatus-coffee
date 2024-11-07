@@ -28,6 +28,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "hono": "^4.6.7",
+    "hono-session": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.453.0",
     "next": "14.2.16",
