@@ -1,3 +1,4 @@
+import { queryClient } from "@/lib/query-client";
 import { auth, login } from "@/services/client/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
@@ -13,7 +14,8 @@ export const useLogin = () => {
   >({
     mutationFn: login,
     onSuccess: (data) => {
-      console.log(data);
+      localStorage.setItem("token", data.token);
+      queryClient.invalidateQueries({ queryKey: ["session"] });
       router.push("/dashboard");
     },
     onError: (error) => {

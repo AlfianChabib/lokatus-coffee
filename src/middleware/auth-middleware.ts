@@ -1,16 +1,18 @@
 import { verifyToken } from "@/common/server/jsonwebtoken";
 import prisma from "@/lib/prisma";
 import { Bindings, Variables } from "@/types/server";
+import { zValidator } from "@hono/zod-validator";
 import { Role } from "@prisma/client";
 import { env } from "hono/adapter";
-import { getCookie } from "hono/cookie";
 import { createFactory } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
+import { z } from "zod";
 
 const factory = createFactory<{ Bindings: Bindings; Variables: Variables }>();
 
 export const authenticate = factory.createMiddleware(async (c, next) => {
-  const token = getCookie(c, "token");
+  const token = c.req.header("Authorization")?.split(" ")[1];
+  console.log(token);
   if (!token) throw new HTTPException(401, { message: "Unauthorized" });
 
   const decoded = verifyToken(token, env(c).TOKEN_JWT_SECRET);
@@ -30,7 +32,13 @@ export const authorize = (role: Role) =>
   factory.createMiddleware(async (c, next) => {
     const user = c.get("user");
     if (!user) throw new HTTPException(401, { message: "Unauthorized" });
-    if (user.role !== role) throw new HTTPException(401, { message: "Unauthorized" });
+    if (user.role !== role) throw new HTTPException(401, { message: "Unauthorized access" });
 
     await next();
   });
+
+export const validateHeader = factory.createMiddleware(
+  zValidator("header", z.object({ authorization: z.string() }), (result, c) => {
+    c.res.headers.append("Authorization", result.data.authorization);
+  }),
+);
