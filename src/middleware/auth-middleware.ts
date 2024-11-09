@@ -12,6 +12,7 @@ const factory = createFactory<{ Bindings: Bindings; Variables: Variables }>();
 
 export const authenticate = factory.createMiddleware(async (c, next) => {
   const token = c.req.header("Authorization")?.split(" ")[1];
+
   if (!token) throw new HTTPException(401, { message: "Unauthorized" });
 
   const decoded = verifyToken(token, env(c).TOKEN_JWT_SECRET);

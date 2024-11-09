@@ -18,6 +18,5 @@ export async function getSession() {
   });
   const data = (await response.json()) as InferResponseType<typeof auth.session.$get>;
 
-  console.log(data, "session data");
   return data.data;
 }
