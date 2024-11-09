@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { Inter, Bellefair } from "next/font/google";
 import "./globals.css";
 import TanstackProviders from "@/components/providers/TanstackProvider";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
   variable: "--font-inter",
+  preload: false,
 });
 
 const bellefair = Bellefair({
@@ -15,6 +17,7 @@ const bellefair = Bellefair({
   subsets: ["hebrew"],
   display: "swap",
   variable: "--font-bellefair",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -28,9 +31,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${bellefair.variable} antialiased`}>
         <TanstackProviders>{children}</TanstackProviders>
+        <Toaster richColors />
       </body>
     </html>
   );

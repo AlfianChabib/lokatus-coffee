@@ -16,8 +16,8 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables & JwtVariables }
   "/api",
 );
 
-app.use("*", cors({ origin: "http://localhost:3000" }));
-app.use("*", csrf({ origin: "http://localhost:3000" }));
+app.use("*", cors({ origin: process.env.NEXT_PUBLIC_APP_URL! }));
+app.use("*", csrf({ origin: process.env.NEXT_PUBLIC_APP_URL! }));
 app.use("*", secureHeaders({ xFrameOptions: false, xXssProtection: false }));
 app.use(logger());
 app.use("/admin/*", authenticate);

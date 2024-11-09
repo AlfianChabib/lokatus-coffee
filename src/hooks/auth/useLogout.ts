@@ -1,24 +1,26 @@
+"use client";
+
 import { queryClient } from "@/lib/query-client";
-import { auth, login } from "@/services/client/auth.service";
+import { auth, logout } from "@/services/client/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export const useLogin = () => {
+export const useLogOut = () => {
   const router = useRouter();
 
   const mutation = useMutation<
-    InferResponseType<typeof auth.login.$post>,
+    InferResponseType<typeof auth.logout.$post>,
     Error,
-    InferRequestType<typeof auth.login.$post>["json"]
+    InferRequestType<typeof auth.logout.$post>
   >({
-    mutationFn: login,
+    mutationFn: logout,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      queryClient.invalidateQueries({ queryKey: ["session"] });
+      router.push("/login");
+      queryClient.resetQueries();
+      localStorage.removeItem("token");
       toast.success(data.message);
-      router.push("/dashboard");
     },
     onError: (error) => {
       toast.error(error.message);
