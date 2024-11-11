@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Bellefair } from "next/font/google";
-import "./globals.css";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import TanstackProviders from "@/components/providers/TanstackProvider";
+import "./globals.css";
 import { Toaster } from "sonner";
 
 const inter = Inter({
@@ -32,9 +33,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${bellefair.variable} antialiased`}>
-        <TanstackProviders>{children}</TanstackProviders>
-        <Toaster richColors />
+      <body className={`${inter.className} ${bellefair.variable} antialiased`}>
+        <NuqsAdapter>
+          <TanstackProviders>{children}</TanstackProviders>
+          <Toaster richColors />
+        </NuqsAdapter>
       </body>
     </html>
   );

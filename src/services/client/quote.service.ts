@@ -1,11 +1,39 @@
-import { client } from "@/lib/hono-client";
+"use client";
 
-const quote = client.api.quote;
+import { QuotesType } from "@/app/api/[[...route]]/quotes";
+import { Mood } from "@prisma/client";
+import { hc } from "hono/client";
 
-export async function getQuotes() {
-  const response = await quote.$get({
-    query: { mood: "HAPPY", passKey: "123456789" },
+const token = localStorage.getItem("token");
+
+export const quotes = hc<QuotesType>(`${process.env.NEXT_PUBLIC_APP_URL!}/api/quotes`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
+
+export async function getQuote() {
+  const response = await quotes[":mood"][":passKey"].$get({
+    param: { mood: "HAPPY", passKey: "passkey" },
   });
   const data = await response.json();
   return data;
 }
+
+export const getQuotes = async (query: {
+  page: string;
+  limit: string;
+  search: string | undefined;
+  mood: Mood | undefined;
+  sort: string | undefined;
+}) => {
+  const response = await quotes.index.$get({
+    query: {
+      page: query.page.toString(),
+      limit: query.limit.toString(),
+      mood: query.mood?.toString() ?? undefined,
+      search: query.search?.toString() ?? undefined,
+      sort: query.sort?.toString(),
+    },
+  });
+  const data = await response.json();
+  return data;
+};

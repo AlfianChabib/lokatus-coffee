@@ -5,8 +5,7 @@ import { deleteCookie } from "hono/cookie";
 import { errorHandler } from "@/common/server/error-handler";
 import { Bindings, Variables } from "@/types/server";
 import { Hono } from "hono";
-import { authenticate } from "@/middleware/auth-middleware";
-import { bearerAuth } from "hono/bearer-auth";
+import { authenticate, bearerToken } from "@/middleware/auth-middleware";
 
 const auth = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .post("/login", zValidator("json", loginSchema), async (c) => {
@@ -23,26 +22,15 @@ const auth = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       throw errorHandler(error);
     }
   })
-  .get(
-    "/session",
-    bearerAuth({
-      headerName: "Authorization",
-      verifyToken: async (token) => {
-        if (!token) return false;
-        return true;
-      },
-    }),
-    authenticate,
-    async (c) => {
-      try {
-        const user = c.get("user");
+  .get("/session", bearerToken, authenticate, async (c) => {
+    try {
+      const user = c.get("user");
 
-        return c.json({ success: true, message: "Session successful", data: user }, 200);
-      } catch (error) {
-        throw errorHandler(error);
-      }
-    },
-  )
+      return c.json({ success: true, message: "Session successful", data: user }, 200);
+    } catch (error) {
+      throw errorHandler(error);
+    }
+  })
   .post("/logout", async (c) => {
     try {
       deleteCookie(c, "token");

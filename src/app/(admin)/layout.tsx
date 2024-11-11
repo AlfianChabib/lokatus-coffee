@@ -8,9 +8,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <SessionProvider>
         <AdminSidebar />
-        <main className="w-full">
+        <main className="flex h-dvh w-full flex-col">
           <AdminHeader />
-          <div className="p-2 md:p-4">{children}</div>
+          <div className="h-full overflow-y-auto p-2 md:p-4">{children}</div>
         </main>
       </SessionProvider>
     </SidebarProvider>

@@ -1,4 +1,6 @@
-import QuoteResult from "@/components/quote/QuoteResult";
+import dynamic from "next/dynamic";
+
+const QuoteResult = dynamic(() => import("@/components/quote/QuoteResult"), { ssr: false });
 
 export default async function Page() {
   return (

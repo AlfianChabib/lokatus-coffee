@@ -1,12 +1,12 @@
 "use client";
 
-import { getQuotes } from "@/services/client/quote.service";
+import { getQuote } from "@/services/client/quote.service";
 import { useQuery } from "@tanstack/react-query";
 
 export default function QuoteResult() {
   const { data } = useQuery({
     queryKey: ["quote"],
-    queryFn: getQuotes,
+    queryFn: getQuote,
   });
 
   if (!data) return <div>Loading...</div>;

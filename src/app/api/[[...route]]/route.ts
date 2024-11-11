@@ -5,7 +5,7 @@ import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
 import { csrf } from "hono/csrf";
 import auth from "./auth";
-import quote from "./quote";
+import quotes from "./quotes";
 import admin from "./admin";
 import { HTTPException } from "hono/http-exception";
 import { Bindings, Variables } from "@/types/server";
@@ -41,7 +41,7 @@ app.onError((err, c) => {
 // );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const routers = app.route("/auth", auth).route("/quote", quote).route("/admin", admin);
+const routers = app.route("/auth", auth).route("/quotes", quotes).route("/admin", admin);
 
 export const GET = handle(app);
 export const POST = handle(app);
