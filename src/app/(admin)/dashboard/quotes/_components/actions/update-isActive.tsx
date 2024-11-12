@@ -5,15 +5,34 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
+import useUpdateIsActive from "@/hooks/admin/useUpdateIsActive";
 
-export default function UpdateIsActive({ status }: { status: boolean }) {
+export default function UpdateIsActive({ id, status }: { id: string; status: boolean }) {
+  const { mutate, isPending } = useUpdateIsActive();
+
+  const handleUpdate = (id: string, isActive: boolean) => {
+    mutate({ id, isActive });
+  };
+
   return (
     <DropdownMenuSub>
       <DropdownMenuSubTrigger>Set status</DropdownMenuSubTrigger>
       <DropdownMenuSubContent>
         <DropdownMenuRadioGroup value={status ? "true" : "false"}>
-          <DropdownMenuRadioItem value={"true"}>Active</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value={"false"}>Non active</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            value={"true"}
+            onClick={() => handleUpdate(id, true)}
+            disabled={isPending}
+          >
+            Active
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            value={"false"}
+            onClick={() => handleUpdate(id, false)}
+            disabled={isPending}
+          >
+            Non active
+          </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuSubContent>
     </DropdownMenuSub>

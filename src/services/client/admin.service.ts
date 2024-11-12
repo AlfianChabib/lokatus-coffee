@@ -9,5 +9,7 @@ export const getPasskey = async () => {
   const response = await adminClient.passkey.$get();
 
   const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
   return data.data;
 };

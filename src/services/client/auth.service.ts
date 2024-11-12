@@ -16,6 +16,7 @@ export const logout = async () => {
   const response = await auth.logout.$post();
 
   const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
 
   return data;
 };
@@ -27,5 +28,6 @@ export const getClientSession = async () => {
   });
 
   const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
   return data.data;
 };

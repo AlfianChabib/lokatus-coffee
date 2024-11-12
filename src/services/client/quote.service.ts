@@ -36,6 +36,8 @@ export const getQuotes = async (query: {
     },
   });
   const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
   return data;
 };
 
@@ -44,7 +46,19 @@ export const updateQuote = async (payload: UpdateQuoteSchema) => {
     param: { id: payload.id },
     json: payload,
   });
-
   const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+};
+
+export const updateIsActive = async (payload: { id: string; isActive: boolean }) => {
+  const response = await quotes.status[":id"].$patch({
+    param: { id: payload.id },
+    json: { isActive: payload.isActive },
+  });
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
   return data;
 };

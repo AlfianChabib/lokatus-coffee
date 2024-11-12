@@ -29,7 +29,7 @@ export default function RowActions({ row }: { row: Row<QuoteResponse> }) {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <UpdateQuote payload={row} />
-        <UpdateIsActive status={row.original.isActive} />
+        <UpdateIsActive status={row.original.isActive} id={row.original.id} />
         {role === "SUPER_ADMIN" ? (
           <>
             <DropdownMenuSeparator />
