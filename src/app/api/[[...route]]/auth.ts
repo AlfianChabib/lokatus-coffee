@@ -34,6 +34,7 @@ const auth = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .post("/logout", async (c) => {
     try {
       deleteCookie(c, "token");
+      c.set("user", undefined);
 
       return c.json({ message: "Logout successful" }, 200);
     } catch (error) {

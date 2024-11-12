@@ -62,3 +62,12 @@ export const updateIsActive = async (payload: { id: string; isActive: boolean })
 
   return data;
 };
+
+export const deleteQuote = async (id: string) => {
+  const response = await quotes[":id"].$delete({ param: { id } });
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+};

@@ -4,7 +4,7 @@ import { JwtVariables } from "hono/jwt";
 export type Variables = {
   passkey: string;
   userId: string;
-  user: Omit<User, "password" | "createdAt" | "updatedAt">;
+  user?: Omit<User, "password" | "createdAt" | "updatedAt">;
 } & JwtVariables;
 
 export type Bindings = {

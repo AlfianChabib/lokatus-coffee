@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -13,6 +12,7 @@ import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import UpdateQuote from "../actions/update-quote";
 import UpdateIsActive from "../actions/update-isActive";
+import DeleteQuote from "../actions/delete-quote";
 
 export default function RowActions({ row }: { row: Row<QuoteResponse> }) {
   const { role } = useSession();
@@ -33,9 +33,7 @@ export default function RowActions({ row }: { row: Row<QuoteResponse> }) {
         {role === "SUPER_ADMIN" ? (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => console.log(row.original.id)}>
-              Delete quote
-            </DropdownMenuItem>
+            <DeleteQuote id={row.original.id} />
           </>
         ) : null}
       </DropdownMenuContent>
