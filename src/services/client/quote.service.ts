@@ -1,6 +1,7 @@
 "use client";
 
 import { QuotesType } from "@/app/api/[[...route]]/quotes";
+import { UpdateQuoteSchema } from "@/validation/quote.validation";
 import { Mood } from "@prisma/client";
 import { hc } from "hono/client";
 
@@ -34,6 +35,16 @@ export const getQuotes = async (query: {
       sort: query.sort?.toString(),
     },
   });
+  const data = await response.json();
+  return data;
+};
+
+export const updateQuote = async (payload: UpdateQuoteSchema) => {
+  const response = await quotes[":id"].$patch({
+    param: { id: payload.id },
+    json: payload,
+  });
+
   const data = await response.json();
   return data;
 };

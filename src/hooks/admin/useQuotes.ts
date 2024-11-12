@@ -1,5 +1,5 @@
 import { getQuotes } from "@/services/client/quote.service";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useQuotesParams } from "./useQuotesParams";
 
 export const useQuotes = () => {
@@ -9,5 +9,7 @@ export const useQuotes = () => {
     queryKey: ["quotes", page, limit, search, mood, sort],
     queryFn: () => getQuotes({ page, limit, search, mood, sort }),
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000,
   });
 };

@@ -18,12 +18,18 @@ enum Mood {
   SAD
 }
 
+enum Status {
+  REQUESTED
+  APPROVED
+}
+
 model Quote {
   id        String   @id @unique @default(cuid())
   content   String
   author    String
   mood      Mood     @default(HAPPY)
   isActive  Boolean  @default(false)
+  status    Status   @default(REQUESTED)
   canShow   Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

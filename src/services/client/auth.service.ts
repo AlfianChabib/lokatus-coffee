@@ -6,13 +6,18 @@ export const auth = client.api.auth;
 export const login = async (payload: LoginSchema) => {
   const response = await auth.login.$post({ json: payload });
 
-  return await response.json();
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
 };
 
 export const logout = async () => {
   const response = await auth.logout.$post();
 
-  return await response.json();
+  const data = await response.json();
+
+  return data;
 };
 
 export const getClientSession = async () => {

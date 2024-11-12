@@ -1,10 +1,11 @@
 import { User } from "@prisma/client";
+import { JwtVariables } from "hono/jwt";
 
 export type Variables = {
   passkey: string;
   userId: string;
   user: Omit<User, "password" | "createdAt" | "updatedAt">;
-};
+} & JwtVariables;
 
 export type Bindings = {
   DATABASE_URL: string;

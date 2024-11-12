@@ -5,6 +5,7 @@ import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 import { Check, Frown, Smile, X } from "lucide-react";
 import { DataTableColumnHeader } from "./data-table-column-header";
+import RowActions from "./row-actions";
 
 export const quoteColumns: ColumnDef<QuoteResponse>[] = [
   {
@@ -66,5 +67,9 @@ export const quoteColumns: ColumnDef<QuoteResponse>[] = [
         </div>
       );
     },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <RowActions row={row} />,
   },
 ];

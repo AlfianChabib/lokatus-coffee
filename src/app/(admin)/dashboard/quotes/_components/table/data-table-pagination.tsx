@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useQuotes } from "@/hooks/admin/useQuotes";
 import { useQuotesParams } from "@/hooks/admin/useQuotesParams";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -21,17 +22,21 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
   const { setLimit, setPage } = useQuotesParams();
 
   if (isLoading || !quotes) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-between px-2">
+        <Skeleton className="h-10 w-full rounded-md" />
+      </div>
+    );
   }
 
   const meta = quotes.meta;
 
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">{meta?.totalData} total data</div>
+    <div className="flex flex-col items-center justify-between gap-2 px-2 md:flex-row">
+      <div className="flex-1 text-sm text-muted-foreground">{meta.totalData} total data</div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rows per page</p>
+          <p className="text-sm font-medium">Page rows</p>
           <Select
             value={String(meta.limit)}
             onValueChange={(value) => {
@@ -42,7 +47,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {[10, 20, 30].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
