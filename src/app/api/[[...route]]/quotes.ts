@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Hono } from "hono";
 import {
+  createQuoteSchema,
   deleteQuoteSchema,
   getQuoteSchema,
   getQuotesSchema,
@@ -99,7 +100,20 @@ const quotes = new Hono()
       throw errorHandler(error);
     }
   })
-  .post("/", zValidator("json", postQuoteSchema), async (c) => {
+  .post("/", bearerToken, authenticate, zValidator("json", createQuoteSchema), async (c) => {
+    try {
+      const { content, mood } = c.req.valid("json");
+
+      const quote = await prisma.quote.create({
+        data: { author: "Lokatus Coffee", content, mood, status: "APPROVED" },
+      });
+
+      return c.json({ message: "Get quote successfully", data: quote }, 200);
+    } catch (error) {
+      throw errorHandler(error);
+    }
+  })
+  .post("/request", zValidator("json", postQuoteSchema), async (c) => {
     try {
       const { author, content, mood } = c.req.valid("json");
 

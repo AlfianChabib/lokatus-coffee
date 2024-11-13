@@ -38,6 +38,12 @@ export const postQuoteSchema = z.object({
   mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
 });
 
+export const createQuoteSchema = z.object({
+  content: z.string().min(10, { message: "Content is too short" }),
+  mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
+});
+
+export type CreateQuoteSchema = z.infer<typeof createQuoteSchema>;
 export type UpdateQuoteSchema = z.infer<typeof updateQuoteSchema>;
 export type UpdateQuoteStatusSchema = z.infer<typeof updateQuoteStatusSchema>;
 export type GetQuotesSchema = z.infer<typeof getQuotesSchema>;

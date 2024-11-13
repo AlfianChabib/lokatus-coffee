@@ -89,7 +89,7 @@ body {
     @apply border-border;
   }
   body {
-    @apply font-inter bg-background text-foreground;
+    @apply bg-background font-inter text-foreground;
   }
 }
 .grainy {

@@ -10,6 +10,7 @@ import admin from "./admin";
 import { HTTPException } from "hono/http-exception";
 import { Bindings, Variables } from "@/types/server";
 import { prettyJSON } from "hono/pretty-json";
+import backgrounds from "./backgrounds";
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().basePath("/api");
 
@@ -28,7 +29,11 @@ app.onError((err, c) => {
 app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const routers = app.route("/auth", auth).route("/quotes", quotes).route("/admin", admin);
+const routers = app
+  .route("/auth", auth)
+  .route("/quotes", quotes)
+  .route("/admin", admin)
+  .route("/backgrounds", backgrounds);
 
 export const GET = handle(app);
 export const POST = handle(app);

@@ -1,7 +1,5 @@
-"use client";
-
 import { QuotesType } from "@/app/api/[[...route]]/quotes";
-import { UpdateQuoteSchema } from "@/validation/quote.validation";
+import { CreateQuoteSchema, UpdateQuoteSchema } from "@/validation/quote.validation";
 import { Mood } from "@prisma/client";
 import { hc } from "hono/client";
 
@@ -15,9 +13,23 @@ export async function getQuote() {
   const response = await quotes[":mood"][":passKey"].$get({
     param: { mood: "HAPPY", passKey: "passkey" },
   });
+
   const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
   return data;
 }
+
+export const createQuote = async (payload: CreateQuoteSchema) => {
+  const response = await quotes.index.$post({
+    json: payload,
+  });
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+};
 
 export const getQuotes = async (query: {
   page: string;
@@ -35,6 +47,7 @@ export const getQuotes = async (query: {
       sort: query.sort?.toString(),
     },
   });
+
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);
 
@@ -46,6 +59,7 @@ export const updateQuote = async (payload: UpdateQuoteSchema) => {
     param: { id: payload.id },
     json: payload,
   });
+
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);
 
@@ -57,6 +71,7 @@ export const updateIsActive = async (payload: { id: string; isActive: boolean })
     param: { id: payload.id },
     json: { isActive: payload.isActive },
   });
+
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);
 

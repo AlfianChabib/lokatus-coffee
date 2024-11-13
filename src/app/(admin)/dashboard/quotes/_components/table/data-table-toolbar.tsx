@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useQuotesParams } from "@/hooks/admin/useQuotesParams";
 import { useDebouncedCallback } from "use-debounce";
 import { ChangeEvent } from "react";
+import CreateQuote from "../actions/create-quote";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -40,6 +41,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           </Button>
         )}
       </div>
+      <CreateQuote />
     </div>
   );
 }
