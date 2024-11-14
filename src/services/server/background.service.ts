@@ -4,8 +4,10 @@ import { writeFile } from "fs/promises";
 import { HTTPException } from "hono/http-exception";
 import path from "path";
 import fs from "node:fs/promises";
+import { v2 as cloudinary } from "cloudinary";
+import { getBase64Encoder } from "@/utils/getBase64Encoder";
 
-export const postBackgroundToStorage = async (image: File) => {
+export const postBackgroundToStorage1 = async (image: File) => {
   const totalBackgrounds = await prisma.background.count();
   if (totalBackgrounds >= 5) throw new HTTPException(400, { message: "Max backgrounds reached" });
 
@@ -16,6 +18,25 @@ export const postBackgroundToStorage = async (image: File) => {
 
   const background = await prisma.background.create({
     data: { contentUrl: "/backgrounds/" + filename, name: filename },
+  });
+  if (!background) throw new HTTPException(400, { message: "Background not created" });
+
+  return { background };
+};
+
+export const postBackgroundToStorage = async (image: File) => {
+  const totalBackgrounds = await prisma.background.count();
+  if (totalBackgrounds >= 5) throw new HTTPException(400, { message: "Max backgrounds reached" });
+
+  const stringResult = await getBase64Encoder(image);
+
+  const result = await cloudinary.uploader.upload(stringResult, {
+    folder: "lokatus",
+  });
+  if (!result) throw new HTTPException(400, { message: "Uploading file failed" });
+
+  const background = await prisma.background.create({
+    data: { contentUrl: result.public_id, name: result.public_id },
   });
   if (!background) throw new HTTPException(400, { message: "Background not created" });
 
@@ -42,6 +63,35 @@ export const updateBackgroundToStorage = async (id: string, image: File) => {
   });
 
   return { background };
+};
+
+export const updateImageCloudinary = async (id: string, image: File) => {
+  const existingBackground = await prisma.background.findUnique({ where: { id } });
+  if (!existingBackground) throw new HTTPException(400, { message: "Background not found" });
+
+  await cloudinary.api.delete_resources([existingBackground.name]);
+
+  const stringResult = await getBase64Encoder(image);
+  const result = await cloudinary.uploader.upload(stringResult, {
+    folder: "lokatus",
+  });
+  if (!result) throw new HTTPException(400, { message: "Uploading file failed" });
+
+  const background = await prisma.background.update({
+    where: { id },
+    data: { contentUrl: result.public_id, name: result.public_id },
+  });
+  if (!background) throw new HTTPException(400, { message: "Background not created" });
+
+  return { background };
+};
+
+export const deleteBackgroundCloudinary = async (id: string) => {
+  const existingBackground = await prisma.background.findUnique({ where: { id } });
+  if (!existingBackground) throw new HTTPException(400, { message: "Background not found" });
+
+  await cloudinary.api.delete_resources([existingBackground.name]);
+  await prisma.background.delete({ where: { id } });
 };
 
 export const deleteBackground = async (id: string) => {

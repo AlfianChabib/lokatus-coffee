@@ -1,6 +1,6 @@
 "use client";
 
-import { useUpdateQuote } from "@/hooks/admin/useUpdateQuote";
+import { useUpdateQuote } from "@/hooks/quotes/useUpdateQuote";
 import {
   Dialog,
   DialogContent,

@@ -2,6 +2,8 @@ import { Images } from "lucide-react";
 import BackgroundList from "./_components/BackgroundList";
 import { PostBackground } from "./_components/PostBackground";
 
+export const dynamic = "force-dynamic";
+
 export default function backgroundPage() {
   return (
     <div className="flex flex-col gap-2">

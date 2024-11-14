@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuotes } from "@/hooks/admin/useQuotes";
+import { useQuotes } from "@/hooks/quotes/useQuotes";
 import { QuotesTable } from "./table/QuotesTable";
 import { quoteColumns } from "./table/columns";
 import Loading from "../loading";

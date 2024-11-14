@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useQuotesParams } from "@/hooks/admin/useQuotesParams";
+import { useQuotesParams } from "@/hooks/quotes/useQuotesParams";
 import { camelize } from "@/utils/camelize";
 
 interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {

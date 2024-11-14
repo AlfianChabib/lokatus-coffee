@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useQuotesParams } from "@/hooks/admin/useQuotesParams";
+import { useQuotesParams } from "@/hooks/quotes/useQuotesParams";
 import { useDebouncedCallback } from "use-debounce";
 import { ChangeEvent } from "react";
 import CreateQuote from "../actions/create-quote";

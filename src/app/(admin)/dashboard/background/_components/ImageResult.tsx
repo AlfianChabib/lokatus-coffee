@@ -1,9 +1,11 @@
+"use client";
+
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { ImageIcon } from "lucide-react";
-import Image from "next/image";
 import React from "react";
 import UpdateBackground from "./UpdateBackground";
 import DeleteBackground from "./DeleteBackground";
+import { CldImage, getCldImageUrl } from "next-cloudinary";
 
 export default function ImageResult({
   contentUrl,
@@ -14,6 +16,12 @@ export default function ImageResult({
   name: string;
   id: string;
 }) {
+  const url = getCldImageUrl({
+    src: `https://res.cloudinary.com/divo8xxkn/image/upload/v1731568835/${contentUrl}`,
+    width: 1080,
+    height: 1920,
+  });
+
   return (
     <AspectRatio
       ratio={9 / 16}
@@ -21,8 +29,10 @@ export default function ImageResult({
     >
       {contentUrl && name ? (
         <div className="relative size-full">
-          <Image
-            src={contentUrl}
+          <CldImage
+            // src={"https://res.cloudinary.com/divo8xxkn/image/upload/v1731568835/" + contentUrl}
+            src={url}
+            priority
             alt={name}
             width={1080}
             height={1920}

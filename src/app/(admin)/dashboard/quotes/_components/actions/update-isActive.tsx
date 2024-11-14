@@ -5,7 +5,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
-import useUpdateIsActive from "@/hooks/admin/useUpdateIsActive";
+import useUpdateIsActive from "@/hooks/quotes/useUpdateIsActive";
 
 export default function UpdateIsActive({ id, status }: { id: string; status: boolean }) {
   const { mutate, isPending } = useUpdateIsActive();

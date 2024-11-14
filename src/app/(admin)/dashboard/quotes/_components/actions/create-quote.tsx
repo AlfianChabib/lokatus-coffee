@@ -1,4 +1,4 @@
-import useCreateQuote from "@/hooks/admin/useCreateQuote";
+import useCreateQuote from "@/hooks/quotes/useCreateQuote";
 import { CreateQuoteSchema, createQuoteSchema } from "@/validation/quote.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

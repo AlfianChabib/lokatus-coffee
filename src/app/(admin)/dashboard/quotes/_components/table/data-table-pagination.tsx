@@ -9,8 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useQuotes } from "@/hooks/admin/useQuotes";
-import { useQuotesParams } from "@/hooks/admin/useQuotesParams";
+import { useQuotes } from "@/hooks/quotes/useQuotes";
+import { useQuotesParams } from "@/hooks/quotes/useQuotesParams";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface DataTablePaginationProps<TData> {

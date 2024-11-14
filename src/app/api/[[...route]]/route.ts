@@ -11,14 +11,33 @@ import { HTTPException } from "hono/http-exception";
 import { Bindings, Variables } from "@/types/server";
 import { prettyJSON } from "hono/pretty-json";
 import backgrounds from "./backgrounds";
+import { v2 as cloudinary } from "cloudinary";
+import { env } from "hono/adapter";
 
-const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().basePath("/api");
+const app = new Hono<{ Bindings: Bindings; Variables: Variables }>({ strict: false }).basePath(
+  "/api",
+);
 
 app.use(logger());
 app.use(prettyJSON());
 app.use("*", cors({ origin: process.env.NEXT_PUBLIC_APP_URL! }));
 app.use("*", csrf({ origin: process.env.NEXT_PUBLIC_APP_URL! }));
 app.use("*", secureHeaders({ xFrameOptions: false, xXssProtection: false }));
+app.use(async (c, next) => {
+  const {
+    NEXY_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    NEXY_PUBLIC_CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET,
+  } = env(c);
+
+  cloudinary.config({
+    cloud_name: NEXY_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: NEXY_PUBLIC_CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
+  });
+  await next();
+});
+
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
     return c.json({ success: false, message: err.message }, err.status);

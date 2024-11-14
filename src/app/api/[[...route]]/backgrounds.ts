@@ -1,7 +1,7 @@
 import {
-  deleteBackground,
+  deleteBackgroundCloudinary,
   postBackgroundToStorage,
-  updateBackgroundToStorage,
+  updateImageCloudinary,
 } from "@/services/server/background.service";
 import { errorHandler } from "@/common/server/error-handler";
 import { Bindings, Variables } from "@/types/server";
@@ -49,7 +49,7 @@ const backgrounds = new Hono<{ Bindings: Bindings; Variables: Variables }>()
         const { id } = c.req.valid("param");
         const { image } = c.req.valid("form");
 
-        const { background } = await updateBackgroundToStorage(id, image);
+        const { background } = await updateImageCloudinary(id, image);
 
         return c.json(
           { success: true, message: "Background updated successfully!", data: background },
@@ -64,7 +64,7 @@ const backgrounds = new Hono<{ Bindings: Bindings; Variables: Variables }>()
     try {
       const { id } = c.req.valid("param");
 
-      await deleteBackground(id);
+      await deleteBackgroundCloudinary(id);
 
       return c.json({ success: true, message: "Background deleted successfully!" }, 200);
     } catch (error) {

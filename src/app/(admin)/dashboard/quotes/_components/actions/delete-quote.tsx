@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import useDeleteQuote from "@/hooks/admin/useDeleteQuote";
+import useDeleteQuote from "@/hooks/quotes/useDeleteQuote";
 
 export default function DeleteQuote({ id }: { id: string }) {
   const { mutate: deleteQuote, isPending } = useDeleteQuote();

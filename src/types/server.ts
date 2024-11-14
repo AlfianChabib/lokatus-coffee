@@ -12,6 +12,9 @@ export type Bindings = {
   PASSKEY_URL: string;
   TOKEN_JWT_SECRET: string;
   SESSION_ENCRYPTION_KEY: string;
+  NEXY_PUBLIC_CLOUDINARY_API_KEY: string;
+  CLOUDINARY_API_SECRET: string;
+  NEXY_PUBLIC_CLOUDINARY_CLOUD_NAME: string;
 };
 
 export interface Passkey {
