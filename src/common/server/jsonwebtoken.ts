@@ -1,3 +1,4 @@
+import { QuoteTokenPayload } from "@/types/server";
 import { Role } from "@prisma/client";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 
@@ -13,4 +14,15 @@ export const verifyToken = (token: string, secret: string) => {
     username: string;
     role: Role;
   } & JwtPayload;
+};
+
+export const signQuoteToken = (payload: QuoteTokenPayload, secret: string) => {
+  return sign(payload, secret, {
+    algorithm: "HS256",
+    expiresIn: "1d",
+  });
+};
+
+export const verifyQuoteToken = (token: string, secret: string) => {
+  return verify(token, secret, { algorithms: ["HS256"] }) as QuoteTokenPayload & JwtPayload;
 };

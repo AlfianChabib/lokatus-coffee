@@ -2,17 +2,9 @@
 const nextConfig = {
   trailingSlash: true,
   images: {
-    minimumCacheTTL: 0,
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "3000",
-      },
+      { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "http", hostname: "localhost", port: "3000" },
     ],
   },
 };

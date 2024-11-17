@@ -1,5 +1,9 @@
 import { QuotesType } from "@/app/api/[[...route]]/quotes";
-import { CreateQuoteSchema, UpdateQuoteSchema } from "@/validation/quote.validation";
+import {
+  CreateQuoteSchema,
+  PostMoodSchema,
+  UpdateQuoteSchema,
+} from "@/validation/quote.validation";
 import { Mood } from "@prisma/client";
 import { hc } from "hono/client";
 
@@ -10,9 +14,16 @@ export const quotes = hc<QuotesType>(`${process.env.NEXT_PUBLIC_APP_URL!}/api/qu
 });
 
 export async function getQuote() {
-  const response = await quotes[":mood"][":passKey"].$get({
-    param: { mood: "HAPPY", passKey: "passkey" },
-  });
+  const response = await quotes.result.$get();
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+}
+
+export async function postMood(payload: PostMoodSchema) {
+  const response = await quotes.mood.$post({ json: payload });
 
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);
@@ -80,6 +91,17 @@ export const updateIsActive = async (payload: { id: string; isActive: boolean })
 
 export const deleteQuote = async (id: string) => {
   const response = await quotes[":id"].$delete({ param: { id } });
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+};
+
+export const checkPasskey = async (passkey: string) => {
+  const response = await quotes.passkey.$post({
+    json: { passKey: passkey },
+  });
 
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);

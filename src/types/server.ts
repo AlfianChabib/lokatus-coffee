@@ -15,6 +15,7 @@ export type Bindings = {
   NEXY_PUBLIC_CLOUDINARY_API_KEY: string;
   CLOUDINARY_API_SECRET: string;
   NEXY_PUBLIC_CLOUDINARY_CLOUD_NAME: string;
+  QUOTE_JWT_SECRET: string;
 };
 
 export interface Passkey {
@@ -23,3 +24,8 @@ export interface Passkey {
   key: string;
   updatedAt: Date;
 }
+
+export type QuoteTokenPayload = {
+  quoteId: string;
+  backgroundId: string;
+};

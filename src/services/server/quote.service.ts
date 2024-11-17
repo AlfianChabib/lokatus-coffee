@@ -1,29 +1,23 @@
+import { signQuoteToken } from "@/common/server/jsonwebtoken";
 import prisma from "@/lib/prisma";
+import { QuoteTokenPayload } from "@/types/server";
 import { getNextDay } from "@/utils/constants";
-import { getRandomQuoteId } from "@/utils/getRandomQuoteId";
+import { getRandomBackgroundId, getRandomQuoteId } from "@/utils/getRandomQuoteId";
 import { GetQuotesSchema } from "@/validation/quote.validation";
 import { Mood, Prisma } from "@prisma/client";
 import { Context } from "hono";
+import { env } from "hono/adapter";
 import { setCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
 
-export const getQuote = async (mood: Mood, c: Context) => {
-  const quoteId = await getRandomQuoteId(mood);
-  const quote = await prisma.quote.findFirst({
-    where: { id: quoteId, isActive: true, canShow: true },
-  });
-
+export const getQuote = async (payload: QuoteTokenPayload) => {
+  const quote = await prisma.quote.findFirst({ where: { id: payload.quoteId } });
   if (!quote) throw new HTTPException(404, { message: "No quote found" });
 
-  setCookie(c, "quoteid", quote.id, {
-    path: "/",
-    httpOnly: true,
-    sameSite: "Lax",
-    expires: getNextDay(),
-    secure: process.env.NODE_ENV === "production",
-  });
+  const background = await prisma.background.findFirst({ where: { id: payload.backgroundId } });
+  if (!background) throw new HTTPException(404, { message: "No background found" });
 
-  return quote;
+  return { quote, background };
 };
 
 export const getQuotes = async (query: GetQuotesSchema) => {
@@ -71,4 +65,21 @@ export const getMeta = (total: number, page: number, limit: number) => {
     canNext: page * limit < total,
     canPrev: page > 1,
   };
+};
+
+export const postMood = async (mood: Mood, c: Context) => {
+  const { QUOTE_JWT_SECRET } = env(c);
+
+  const quoteId = await getRandomQuoteId(mood);
+  const backgroundId = await getRandomBackgroundId();
+
+  const quoteToken = signQuoteToken({ quoteId, backgroundId }, QUOTE_JWT_SECRET);
+
+  setCookie(c, "quote", quoteToken, {
+    path: "/",
+    httpOnly: true,
+    sameSite: "Lax",
+    expires: getNextDay(),
+    secure: process.env.NODE_ENV === "production",
+  });
 };

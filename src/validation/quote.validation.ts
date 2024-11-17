@@ -16,8 +16,15 @@ export const deleteQuoteSchema = z.object({
 });
 
 export const getQuoteSchema = z.object({
-  passKey: z.string().min(3, { message: "Passkey is too short" }),
   mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
+});
+
+export const postMoodSchema = z.object({
+  mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
+});
+
+export const checkPasskeySchema = z.object({
+  passKey: z.string().min(11, { message: "Passkey is too short" }),
 });
 
 export const updateQuoteSchema = z.object({
@@ -43,6 +50,8 @@ export const createQuoteSchema = z.object({
   mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
 });
 
+export type PostMoodSchema = z.infer<typeof postMoodSchema>;
+export type CheckPasskeySchema = z.infer<typeof checkPasskeySchema>;
 export type CreateQuoteSchema = z.infer<typeof createQuoteSchema>;
 export type UpdateQuoteSchema = z.infer<typeof updateQuoteSchema>;
 export type UpdateQuoteStatusSchema = z.infer<typeof updateQuoteStatusSchema>;

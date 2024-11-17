@@ -1,21 +1,27 @@
 import prisma from "@/lib/prisma";
 import { Hono } from "hono";
+import { Bindings, Variables } from "@/types/server";
 import {
+  checkPasskeySchema,
   createQuoteSchema,
   deleteQuoteSchema,
-  getQuoteSchema,
   getQuotesSchema,
+  postMoodSchema,
   postQuoteSchema,
   updateQuoteSchema,
   updateQuoteStatusSchema,
 } from "@/validation/quote.validation";
 import { zValidator } from "@hono/zod-validator";
-import { getMeta, getQuote, getQuotes } from "@/services/server/quote.service";
+import { getMeta, getQuote, getQuotes, postMood } from "@/services/server/quote.service";
 import { errorHandler } from "@/common/server/error-handler";
 import { authenticate, authorize, bearerToken } from "@/middleware/auth-middleware";
 import { HTTPException } from "hono/http-exception";
+import { getPasskey } from "@/services/server/admin.service";
+import { env } from "hono/adapter";
+import { getCookie, setCookie } from "hono/cookie";
+import { verifyQuoteToken } from "@/common/server/jsonwebtoken";
 
-const quotes = new Hono()
+const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .get("/", zValidator("query", getQuotesSchema), bearerToken, authenticate, async (c) => {
     try {
       const query = c.req.valid("query");
@@ -90,16 +96,6 @@ const quotes = new Hono()
       }
     },
   )
-  .get("/:mood/:passKey", zValidator("param", getQuoteSchema), async (c) => {
-    try {
-      const { mood } = c.req.valid("param");
-      const quote = await getQuote(mood, c);
-
-      return c.json({ message: "Get quote successfully", data: quote }, 200);
-    } catch (error) {
-      throw errorHandler(error);
-    }
-  })
   .post("/", bearerToken, authenticate, zValidator("json", createQuoteSchema), async (c) => {
     try {
       const { content, mood } = c.req.valid("json");
@@ -122,6 +118,50 @@ const quotes = new Hono()
       });
 
       return c.json({ message: "Quote created", data: quote }, 201);
+    } catch (error) {
+      throw errorHandler(error);
+    }
+  })
+  .post("/mood", zValidator("json", postMoodSchema), async (c) => {
+    try {
+      const { mood } = c.req.valid("json");
+
+      await postMood(mood, c);
+
+      return c.json({ message: "Post mood successfully" }, 200);
+    } catch (error) {
+      throw errorHandler(error);
+    }
+  })
+  .get("/result", async (c) => {
+    try {
+      const quoteToken = getCookie(c, "quote");
+      const { QUOTE_JWT_SECRET } = env(c);
+      if (!quoteToken) throw new HTTPException(401, { message: "Unauthorized" });
+
+      const quotePayload = verifyQuoteToken(quoteToken, QUOTE_JWT_SECRET);
+
+      const quoteResponse = await getQuote(quotePayload);
+
+      return c.json({ message: "Get quote successfully", data: quoteResponse }, 200);
+    } catch (error) {
+      throw errorHandler(error);
+    }
+  })
+  .post("/passkey", zValidator("json", checkPasskeySchema), async (c) => {
+    try {
+      const { passKey } = c.req.valid("json");
+      const { PASSKEY_URL } = env(c);
+
+      const { passkey } = await getPasskey(PASSKEY_URL);
+
+      if (passkey.key !== passKey) {
+        throw new HTTPException(401, { message: "Invalid passkey, please enter valid passkey" });
+      }
+
+      setCookie(c, "passkey", passkey.key, { path: "/" });
+
+      return c.json({ success: true, message: "Passkey is valid", data: passkey }, 200);
     } catch (error) {
       throw errorHandler(error);
     }

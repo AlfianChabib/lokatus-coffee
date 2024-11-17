@@ -7,6 +7,9 @@ export default function QuoteResult() {
   const { data } = useQuery({
     queryKey: ["quote"],
     queryFn: getQuote,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
   if (!data) return <div>Loading...</div>;
@@ -14,8 +17,8 @@ export default function QuoteResult() {
   return (
     <div className="flex w-full flex-col items-center justify-center">
       <div className="text-center">
-        <p>{data.data.content}</p>
-        <p>{data.data.author}</p>
+        <p>{data.data.quote.content}</p>
+        <p>{data.data.quote.author}</p>
       </div>
     </div>
   );
