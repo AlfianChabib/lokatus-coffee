@@ -68,7 +68,8 @@ export const getMeta = (total: number, page: number, limit: number) => {
 };
 
 export const postMood = async (mood: Mood, c: Context) => {
-  const { QUOTE_JWT_SECRET } = env(c);
+  const { QUOTE_JWT_SECRET, NODE_ENV } = env(c);
+  const isDev = NODE_ENV === "development";
 
   const quoteId = await getRandomQuoteId(mood);
   const backgroundId = await getRandomBackgroundId();
@@ -79,7 +80,7 @@ export const postMood = async (mood: Mood, c: Context) => {
     path: "/",
     httpOnly: true,
     sameSite: "Lax",
-    expires: getNextDay(),
+    ...(isDev ? { maxAge: 60 } : { expires: getNextDay() }),
     secure: process.env.NODE_ENV === "production",
   });
 };

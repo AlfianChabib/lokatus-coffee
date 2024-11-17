@@ -8,6 +8,7 @@ export type Variables = {
 } & JwtVariables;
 
 export type Bindings = {
+  NODE_ENV: "development" | "production";
   DATABASE_URL: string;
   PASSKEY_URL: string;
   TOKEN_JWT_SECRET: string;

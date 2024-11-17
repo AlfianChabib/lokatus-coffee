@@ -2,9 +2,12 @@
 
 import { getQuote } from "@/services/client/quote.service";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function QuoteResult() {
-  const { data } = useQuery({
+  const router = useRouter();
+
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["quote"],
     queryFn: getQuote,
     staleTime: Infinity,
@@ -12,7 +15,8 @@ export default function QuoteResult() {
     refetchOnReconnect: false,
   });
 
-  if (!data) return <div>Loading...</div>;
+  if (isError) router.push("/");
+  if (isLoading || !data) return <div>Loading...</div>;
 
   return (
     <div className="flex w-full flex-col items-center justify-center">

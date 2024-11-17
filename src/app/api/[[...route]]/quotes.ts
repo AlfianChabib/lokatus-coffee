@@ -20,6 +20,7 @@ import { getPasskey } from "@/services/server/admin.service";
 import { env } from "hono/adapter";
 import { getCookie, setCookie } from "hono/cookie";
 import { verifyQuoteToken } from "@/common/server/jsonwebtoken";
+import { getNextDay } from "@/utils/constants";
 
 const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .get("/", zValidator("query", getQuotesSchema), bearerToken, authenticate, async (c) => {
@@ -135,11 +136,12 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   })
   .get("/result", async (c) => {
     try {
-      const quoteToken = getCookie(c, "quote");
       const { QUOTE_JWT_SECRET } = env(c);
+      const quoteToken = getCookie(c, "quote");
       if (!quoteToken) throw new HTTPException(401, { message: "Unauthorized" });
 
       const quotePayload = verifyQuoteToken(quoteToken, QUOTE_JWT_SECRET);
+      if (!quotePayload) throw new HTTPException(401, { message: "Unauthorized" });
 
       const quoteResponse = await getQuote(quotePayload);
 
@@ -151,7 +153,10 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .post("/passkey", zValidator("json", checkPasskeySchema), async (c) => {
     try {
       const { passKey } = c.req.valid("json");
-      const { PASSKEY_URL } = env(c);
+      const { PASSKEY_URL, NODE_ENV } = env(c);
+      const isDev = NODE_ENV === "development";
+
+      console.log(isDev, "is dev");
 
       const { passkey } = await getPasskey(PASSKEY_URL);
 
@@ -159,7 +164,13 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
         throw new HTTPException(401, { message: "Invalid passkey, please enter valid passkey" });
       }
 
-      setCookie(c, "passkey", passkey.key, { path: "/" });
+      setCookie(c, "passkey", passkey.key, {
+        path: "/",
+        ...(isDev ? { maxAge: 60 } : { expires: getNextDay() }),
+        sameSite: "Lax",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      });
 
       return c.json({ success: true, message: "Passkey is valid", data: passkey }, 200);
     } catch (error) {

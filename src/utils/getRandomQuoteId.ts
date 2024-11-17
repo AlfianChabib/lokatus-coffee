@@ -8,10 +8,21 @@ export const getRandomQuoteId = async (mood: Mood) => {
     select: { id: true },
   });
 
-  if (!quotesId.length) throw new HTTPException(404, { message: "No quote found" });
+  const totalQuotes = quotesId.length;
+  console.log(process.env.NODE_ENV);
+
+  if (totalQuotes === 0) throw new HTTPException(404, { message: "No quote found" });
+  if (totalQuotes === 1) {
+    await prisma.quote.updateMany({ data: { canShow: true } });
+  }
 
   const randomNumber = Math.floor(Math.random() * quotesId.length);
   const quoteId = quotesId[randomNumber].id;
+
+  await prisma.quote.update({
+    where: { id: quoteId },
+    data: { canShow: false },
+  });
 
   return quoteId;
 };
