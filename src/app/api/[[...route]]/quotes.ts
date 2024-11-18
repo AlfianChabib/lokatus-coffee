@@ -18,7 +18,7 @@ import { authenticate, authorize, bearerToken } from "@/middleware/auth-middlewa
 import { HTTPException } from "hono/http-exception";
 import { getPasskey } from "@/services/server/admin.service";
 import { env } from "hono/adapter";
-import { getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { verifyQuoteToken } from "@/common/server/jsonwebtoken";
 import { getNextDay } from "@/utils/constants";
 
@@ -141,7 +141,11 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       if (!quoteToken) throw new HTTPException(401, { message: "Unauthorized" });
 
       const quotePayload = verifyQuoteToken(quoteToken, QUOTE_JWT_SECRET);
-      if (!quotePayload) throw new HTTPException(401, { message: "Unauthorized" });
+      if (!quotePayload) {
+        deleteCookie(c, "quote");
+        deleteCookie(c, "passkey");
+        throw new HTTPException(401, { message: "Unauthorized" });
+      }
 
       const quoteResponse = await getQuote(quotePayload);
 
@@ -156,8 +160,6 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { PASSKEY_URL, NODE_ENV } = env(c);
       const isDev = NODE_ENV === "development";
 
-      console.log(isDev, "is dev");
-
       const { passkey } = await getPasskey(PASSKEY_URL);
 
       if (passkey.key !== passKey) {
@@ -166,7 +168,7 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
       setCookie(c, "passkey", passkey.key, {
         path: "/",
-        ...(isDev ? { maxAge: 60 } : { expires: getNextDay() }),
+        ...(isDev ? { maxAge: 60 * 60 } : { expires: getNextDay() }),
         sameSite: "Lax",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

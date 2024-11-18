@@ -80,7 +80,7 @@ export const postMood = async (mood: Mood, c: Context) => {
     path: "/",
     httpOnly: true,
     sameSite: "Lax",
-    ...(isDev ? { maxAge: 60 } : { expires: getNextDay() }),
+    ...(isDev ? { maxAge: 60 * 60 } : { expires: getNextDay() }),
     secure: process.env.NODE_ENV === "production",
   });
 };

@@ -1,11 +1,11 @@
+import { hc } from "hono/client";
 import { QuotesType } from "@/app/api/[[...route]]/quotes";
+import { Mood } from "@prisma/client";
 import {
   CreateQuoteSchema,
   PostMoodSchema,
   UpdateQuoteSchema,
 } from "@/validation/quote.validation";
-import { Mood } from "@prisma/client";
-import { hc } from "hono/client";
 
 const token = localStorage.getItem("token");
 
@@ -19,7 +19,7 @@ export async function getQuote() {
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);
 
-  return data;
+  return data.data;
 }
 
 export async function postMood(payload: PostMoodSchema) {

@@ -9,11 +9,13 @@ export const getRandomQuoteId = async (mood: Mood) => {
   });
 
   const totalQuotes = quotesId.length;
-  console.log(process.env.NODE_ENV);
 
   if (totalQuotes === 0) throw new HTTPException(404, { message: "No quote found" });
   if (totalQuotes === 1) {
-    await prisma.quote.updateMany({ data: { canShow: true } });
+    await prisma.quote.updateMany({
+      where: { mood, isActive: true, status: "APPROVED" },
+      data: { canShow: true },
+    });
   }
 
   const randomNumber = Math.floor(Math.random() * quotesId.length);
