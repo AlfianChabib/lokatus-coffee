@@ -4,7 +4,9 @@ import { Mood } from "@prisma/client";
 import {
   CreateQuoteSchema,
   PostMoodSchema,
+  RequestQuoteSchema,
   UpdateQuoteSchema,
+  UpdateRequestQuoteSchema,
 } from "@/validation/quote.validation";
 
 const token = localStorage.getItem("token");
@@ -24,6 +26,15 @@ export async function getQuote() {
 
 export async function postMood(payload: PostMoodSchema) {
   const response = await quotes.mood.$post({ json: payload });
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+}
+
+export async function requestQuote(payload: RequestQuoteSchema) {
+  const response = await quotes.request.$post({ json: payload });
 
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);
@@ -102,6 +113,36 @@ export const checkPasskey = async (passkey: string) => {
   const response = await quotes.passkey.$post({
     json: { passKey: passkey },
   });
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+};
+
+export const getRequestQuotes = async () => {
+  const response = await quotes.request.$get();
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data.data;
+};
+
+export const updateRequestQuote = async (payload: UpdateRequestQuoteSchema) => {
+  const response = await quotes.request[":id"].$patch({
+    param: { id: payload.id },
+    json: { author: payload.author, content: payload.content, mood: payload.mood },
+  });
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+};
+
+export const acceptRequestQuote = async (id: string) => {
+  const response = await quotes.request.accept[":id"].$patch({ param: { id } });
 
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);

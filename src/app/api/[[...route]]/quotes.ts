@@ -2,25 +2,36 @@ import prisma from "@/lib/prisma";
 import { Hono } from "hono";
 import { Bindings, Variables } from "@/types/server";
 import {
+  acceptRequestQuoteSchema,
   checkPasskeySchema,
   createQuoteSchema,
   deleteQuoteSchema,
   getQuotesSchema,
   postMoodSchema,
-  postQuoteSchema,
+  requestQuoteSchema,
   updateQuoteSchema,
   updateQuoteStatusSchema,
+  updateRequestQuoteSchema,
 } from "@/validation/quote.validation";
 import { zValidator } from "@hono/zod-validator";
-import { getMeta, getQuote, getQuotes, postMood } from "@/services/server/quote.service";
+import {
+  acceptRequestQuote,
+  checkPasskey,
+  getMeta,
+  getQuote,
+  getQuotes,
+  getRequestQuotes,
+  postMood,
+  requestQuote,
+  updateRequestQuote,
+  updateStatusQuote,
+} from "@/services/server/quote.service";
 import { errorHandler } from "@/common/server/error-handler";
 import { authenticate, authorize, bearerToken } from "@/middleware/auth-middleware";
 import { HTTPException } from "hono/http-exception";
-import { getPasskey } from "@/services/server/admin.service";
 import { env } from "hono/adapter";
-import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie } from "hono/cookie";
 import { verifyQuoteToken } from "@/common/server/jsonwebtoken";
-import { getNextDay } from "@/utils/constants";
 
 const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .get("/", zValidator("query", getQuotesSchema), bearerToken, authenticate, async (c) => {
@@ -85,11 +96,7 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
         const { id } = c.req.valid("param");
         const payload = c.req.valid("json");
 
-        const quote = await prisma.quote.update({
-          where: { id },
-          data: { isActive: payload.isActive },
-        });
-        if (!quote) throw new HTTPException(404, { message: "Quote not found" });
+        const quote = await updateStatusQuote({ id, isActive: payload.isActive });
 
         return c.json({ message: "Update quote status successfully", data: quote }, 200);
       } catch (error) {
@@ -102,7 +109,7 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { content, mood } = c.req.valid("json");
 
       const quote = await prisma.quote.create({
-        data: { author: "Lokatus Coffee", content, mood, status: "APPROVED" },
+        data: { author: "Lokatus Coffee", content, mood, status: "APPROVED", canShow: true },
       });
 
       return c.json({ message: "Get quote successfully", data: quote }, 200);
@@ -110,15 +117,52 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       throw errorHandler(error);
     }
   })
-  .post("/request", zValidator("json", postQuoteSchema), async (c) => {
+  .get("/request", bearerToken, authenticate, async (c) => {
     try {
-      const { author, content, mood } = c.req.valid("json");
+      const quotes = await getRequestQuotes();
 
-      const quote = await prisma.quote.create({
-        data: { author, content, mood },
-      });
+      return c.json({ message: "Get request quotes successfully", data: quotes }, 200);
+    } catch (error) {
+      throw errorHandler(error);
+    }
+  })
+  .post("/request", zValidator("json", requestQuoteSchema), async (c) => {
+    try {
+      const payload = c.req.valid("json");
 
-      return c.json({ message: "Quote created", data: quote }, 201);
+      await requestQuote(payload, c);
+
+      return c.json({ message: "Request quote successfully" }, 201);
+    } catch (error) {
+      throw errorHandler(error);
+    }
+  })
+  .patch(
+    "/request/:id",
+    zValidator("param", updateRequestQuoteSchema.pick({ id: true })),
+    zValidator("json", updateRequestQuoteSchema.pick({ author: true, content: true, mood: true })),
+    bearerToken,
+    authenticate,
+    async (c) => {
+      try {
+        const { id } = c.req.valid("param");
+        const payload = c.req.valid("json");
+
+        await updateRequestQuote({ ...payload, id });
+
+        return c.json({ message: "Update quote successfully" }, 200);
+      } catch (error) {
+        throw errorHandler(error);
+      }
+    },
+  )
+  .patch("/request/accept/:id", zValidator("param", acceptRequestQuoteSchema), async (c) => {
+    try {
+      const { id } = c.req.valid("param");
+
+      await acceptRequestQuote(id);
+
+      return c.json({ message: "Update quote successfully" }, 200);
     } catch (error) {
       throw errorHandler(error);
     }
@@ -157,22 +201,8 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .post("/passkey", zValidator("json", checkPasskeySchema), async (c) => {
     try {
       const { passKey } = c.req.valid("json");
-      const { PASSKEY_URL, NODE_ENV } = env(c);
-      const isDev = NODE_ENV === "development";
 
-      const { passkey } = await getPasskey(PASSKEY_URL);
-
-      if (passkey.key !== passKey) {
-        throw new HTTPException(401, { message: "Invalid passkey, please enter valid passkey" });
-      }
-
-      setCookie(c, "passkey", passkey.key, {
-        path: "/",
-        ...(isDev ? { maxAge: 60 * 60 } : { expires: getNextDay() }),
-        sameSite: "Lax",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-      });
+      const passkey = await checkPasskey(passKey, c);
 
       return c.json({ success: true, message: "Passkey is valid", data: passkey }, 200);
     } catch (error) {

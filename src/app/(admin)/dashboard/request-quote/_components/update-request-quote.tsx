@@ -1,6 +1,5 @@
 "use client";
 
-import { useUpdateQuote } from "@/hooks/quotes/useUpdateQuote";
 import {
   Dialog,
   DialogContent,
@@ -9,11 +8,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Row } from "@tanstack/react-table";
-import { QuoteResponse } from "@/types/quote";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UpdateQuoteSchema, updateQuoteSchema } from "@/validation/quote.validation";
 import {
   Form,
   FormControl,
@@ -24,7 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Submit from "@/components/form-fields/Submit";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Pencil } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -32,28 +28,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useUpdateRequestQuote from "@/hooks/quotes/useUpdateRequestQuote";
+import { UpdateRequestQuoteSchema, updateRequestQuoteSchema } from "@/validation/quote.validation";
+import { RequestQuoteResponse } from "@/types/quote";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
-export default function UpdateQuote({ payload }: { payload: Row<QuoteResponse> }) {
-  const { mutate, isPending } = useUpdateQuote();
+export default function UpdateRequestQuote({ quote }: { quote: RequestQuoteResponse }) {
+  const { mutate: updateQuote, isPending } = useUpdateRequestQuote();
 
-  const form = useForm({
-    resolver: zodResolver(updateQuoteSchema),
-    defaultValues: {
-      content: payload.original.content,
-      author: payload.original.author,
-      mood: payload.original.mood,
-      id: payload.original.id,
-    },
+  const form = useForm<UpdateRequestQuoteSchema>({
+    resolver: zodResolver(updateRequestQuoteSchema),
+    defaultValues: { mood: quote.mood, author: quote.author, content: quote.content, id: quote.id },
   });
 
-  const handleSubmit = (data: UpdateQuoteSchema) => {
-    mutate(data);
+  const handleSubmit = async (data: UpdateRequestQuoteSchema) => {
+    updateQuote(data);
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>Update quote</DropdownMenuItem>
+        <Button size={"icon"} variant={"outline"} className="size-7">
+          <Pencil className="size-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="grid space-y-8">
@@ -68,7 +66,7 @@ export default function UpdateQuote({ payload }: { payload: Row<QuoteResponse> }
                     <FormItem>
                       <FormLabel>Content</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Textarea {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

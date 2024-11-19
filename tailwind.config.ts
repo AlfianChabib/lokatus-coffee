@@ -12,8 +12,12 @@ const config: Config = {
     fontFamily: {
       inter: ["var(--font-inter)"],
       bellefair: ["var(--font-bellefair)"],
+      montserrat: ["var(--font-montserrat)"],
     },
     extend: {
+      rotate: {
+        17: "17deg",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

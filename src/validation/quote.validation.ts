@@ -39,17 +39,29 @@ export const updateQuoteStatusSchema = z.object({
   isActive: z.boolean(),
 });
 
-export const postQuoteSchema = z.object({
-  content: z.string().min(10, { message: "Content is too short" }),
-  author: z.string().min(3, { message: "Author name is too short" }),
-  mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
-});
-
 export const createQuoteSchema = z.object({
   content: z.string().min(10, { message: "Content is too short" }),
   mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
 });
 
+export const requestQuoteSchema = z.object({
+  content: z.string().min(10, { message: "Content is too short" }),
+  mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
+  author: z.string().min(3, { message: "Author name is too short" }),
+});
+
+export const updateRequestQuoteSchema = z.object({
+  id: z.string(),
+  content: z.string().min(10, { message: "Content is too short" }),
+  mood: z.literal(Mood.HAPPY).or(z.literal(Mood.SAD)),
+  author: z.string().min(3, { message: "Author name is too short" }),
+});
+
+export const acceptRequestQuoteSchema = z.object({ id: z.string() });
+
+export type AcceptRequestQuoteSchema = z.infer<typeof acceptRequestQuoteSchema>;
+export type UpdateRequestQuoteSchema = z.infer<typeof updateRequestQuoteSchema>;
+export type RequestQuoteSchema = z.infer<typeof requestQuoteSchema>;
 export type PostMoodSchema = z.infer<typeof postMoodSchema>;
 export type CheckPasskeySchema = z.infer<typeof checkPasskeySchema>;
 export type CreateQuoteSchema = z.infer<typeof createQuoteSchema>;
@@ -57,4 +69,3 @@ export type UpdateQuoteSchema = z.infer<typeof updateQuoteSchema>;
 export type UpdateQuoteStatusSchema = z.infer<typeof updateQuoteStatusSchema>;
 export type GetQuotesSchema = z.infer<typeof getQuotesSchema>;
 export type GetQuoteSchema = z.infer<typeof getQuoteSchema>;
-export type PostQuoteSchema = z.infer<typeof postQuoteSchema>;

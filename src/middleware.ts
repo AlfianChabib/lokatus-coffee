@@ -50,5 +50,14 @@ export async function middleware(req: NextRequest) {
   //   }
   // }
 
+  if (pathname.startsWith("/request")) {
+    const requestId = cookies.get("requestId");
+    if (requestId && requestId.value) {
+      return NextResponse.redirect(new URL("/quote", req.url));
+    } else {
+      return NextResponse.next();
+    }
+  }
+
   return NextResponse.next();
 }

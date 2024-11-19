@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Bellefair } from "next/font/google";
+import { Inter, Bellefair, Montserrat } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import TanstackProviders from "@/components/providers/TanstackProvider";
 import "./globals.css";
@@ -10,6 +10,14 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
   variable: "--font-inter",
+  preload: false,
+});
+
+const montserrat = Montserrat({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-montserrat",
   preload: false,
 });
 
@@ -33,7 +41,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} ${bellefair.variable} antialiased`}>
+      <body
+        className={`${inter.className} ${bellefair.variable} ${montserrat.variable} antialiased`}
+      >
         <NuqsAdapter>
           <TanstackProviders>{children}</TanstackProviders>
           <Toaster richColors />
