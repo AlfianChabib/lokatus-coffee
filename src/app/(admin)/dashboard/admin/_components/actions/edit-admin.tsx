@@ -33,6 +33,7 @@ import { updateAdminSchema, UpdateAdminSchema } from "@/validation/admin.validat
 import { Input } from "@/components/ui/input";
 import useUpdateAdmin from "@/hooks/admin/useUpdateAdmin";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { useSession } from "@/components/providers/SessionProvider";
 
 type UpdateAdminProps = {
   id: string;
@@ -41,6 +42,8 @@ type UpdateAdminProps = {
 };
 
 export default function UpdateAdmin({ id, username, role }: UpdateAdminProps) {
+  const session = useSession();
+
   const { mutate, isPending } = useUpdateAdmin();
   const form = useForm<UpdateAdminSchema>({
     resolver: zodResolver(updateAdminSchema),
@@ -83,7 +86,11 @@ export default function UpdateAdmin({ id, username, role }: UpdateAdminProps) {
                 <FormItem>
                   <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" />
+                    <Input
+                      {...field}
+                      type="password"
+                      disabled={role === "SUPER_ADMIN" && username !== session.username}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
