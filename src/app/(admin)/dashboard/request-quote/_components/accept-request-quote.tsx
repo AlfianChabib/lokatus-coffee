@@ -16,7 +16,7 @@ import useAcceptRequestQuote from "@/hooks/quotes/useAcceptRequestQuote";
 import { CheckCheck } from "lucide-react";
 
 export default function AcceptRequestQuote({ id }: { id: string }) {
-  const { mutate: accept, isPending } = useAcceptRequestQuote();
+  const { mutate: acceptRequest, isPending } = useAcceptRequestQuote();
 
   return (
     <AlertDialog>
@@ -34,7 +34,7 @@ export default function AcceptRequestQuote({ id }: { id: string }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => accept(id)} disabled={isPending}>
+          <AlertDialogAction onClick={() => acceptRequest(id)} disabled={isPending}>
             Accept
           </AlertDialogAction>
         </AlertDialogFooter>

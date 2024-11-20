@@ -33,6 +33,7 @@ export default function ImageResult({
             // src={"https://res.cloudinary.com/divo8xxkn/image/upload/v1731568835/" + contentUrl}
             src={url}
             priority
+            unoptimized
             alt={name}
             width={1080}
             height={1920}

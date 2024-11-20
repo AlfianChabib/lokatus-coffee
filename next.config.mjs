@@ -7,6 +7,7 @@ const nextConfig = {
       { protocol: "http", hostname: "localhost", port: "3000" },
     ],
   },
+  crossOrigin: "anonymous",
 };
 
 export default nextConfig;

@@ -1,10 +1,9 @@
-"use client";
+import { getSession } from "@/utils/getSession";
+import { redirect } from "next/navigation";
 
-import { useSession } from "@/components/providers/SessionProvider";
-// import { getSession } from "@/utils/getSession";
-
-export default function Page() {
-  const { username } = useSession();
-  console.log(username);
-  return <div>{username}</div>;
+export default async function Page() {
+  const session = await getSession();
+  if (session) {
+    redirect("/dashboard/quotes");
+  } else redirect("/login");
 }
