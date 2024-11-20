@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse, userAgent } from "next/server";
 import { getSession } from "./utils/getSession";
 
 export async function middleware(req: NextRequest) {
@@ -39,17 +39,17 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // if (pathname.startsWith("/mood")) {
-  //   const passkey = cookies.get("passkey");
-  //   if (!passkey) return NextResponse.redirect(new URL("/passkey", req.url));
+  if (pathname.startsWith("/mood")) {
+    const passkey = cookies.get("passkey");
+    if (!passkey) return NextResponse.redirect(new URL("/passkey", req.url));
 
-  //   const { device } = userAgent(req);
-  //   const isMobile = device.type === "mobile";
+    const { device } = userAgent(req);
+    const isMobile = device.type === "mobile";
 
-  //   if (!isMobile) {
-  //     return NextResponse.redirect(new URL("/", req.url));
-  //   }
-  // }
+    if (!isMobile) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
 
   if (pathname.startsWith("/request")) {
     const requestId = cookies.get("requestId");
