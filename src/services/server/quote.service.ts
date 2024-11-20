@@ -147,7 +147,7 @@ export const getRequestQuotes = async () => {
 };
 
 export const updateRequestQuote = async (payload: UpdateRequestQuoteSchema) => {
-  const quote = await prisma.quote.findUnique({ where: { id: payload.id } });
+  const quote = await prisma.quote.findUnique({ where: { id: payload.id, status: "REQUESTED" } });
   if (!quote) throw new HTTPException(404, { message: "Not Found" });
 
   await prisma.quote.update({
@@ -161,11 +161,18 @@ export const updateRequestQuote = async (payload: UpdateRequestQuoteSchema) => {
 };
 
 export const acceptRequestQuote = async (id: string) => {
-  const quote = await prisma.quote.findUnique({ where: { id } });
+  const quote = await prisma.quote.findUnique({ where: { id, status: "REQUESTED" } });
   if (!quote) throw new HTTPException(404, { message: "Not Found" });
 
   await prisma.quote.update({
     where: { id: quote.id },
     data: { canShow: true, isActive: true, status: "APPROVED" },
   });
+};
+
+export const deleteRequestQuote = async (id: string) => {
+  const quote = await prisma.quote.findUnique({ where: { id, status: "REQUESTED" } });
+  if (!quote) throw new HTTPException(404, { message: "Not Found" });
+
+  return await prisma.quote.delete({ where: { id, status: "REQUESTED" } });
 };

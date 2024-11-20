@@ -6,6 +6,7 @@ import {
   checkPasskeySchema,
   createQuoteSchema,
   deleteQuoteSchema,
+  deleteRequestQuoteSchema,
   getQuotesSchema,
   postMoodSchema,
   requestQuoteSchema,
@@ -17,6 +18,7 @@ import { zValidator } from "@hono/zod-validator";
 import {
   acceptRequestQuote,
   checkPasskey,
+  deleteRequestQuote,
   getMeta,
   getQuote,
   getQuotes,
@@ -163,6 +165,17 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       await acceptRequestQuote(id);
 
       return c.json({ message: "Update quote successfully" }, 200);
+    } catch (error) {
+      throw errorHandler(error);
+    }
+  })
+  .delete("/request/:id", zValidator("param", deleteRequestQuoteSchema), async (c) => {
+    try {
+      const { id } = c.req.valid("param");
+
+      await deleteRequestQuote(id);
+
+      return c.json({ message: "Delete request quote successfully" }, 200);
     } catch (error) {
       throw errorHandler(error);
     }

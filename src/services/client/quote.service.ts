@@ -149,3 +149,12 @@ export const acceptRequestQuote = async (id: string) => {
 
   return data;
 };
+
+export const deleteRequestQuote = async (id: string) => {
+  const response = await quotes.request[":id"].$delete({ param: { id } });
+
+  const data = await response.json();
+  if (!response.ok) return Promise.reject(data);
+
+  return data;
+};

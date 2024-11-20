@@ -5,6 +5,7 @@ import Loading from "../loading";
 import { Frown, Smile } from "lucide-react";
 import UpdateRequestQuote from "./update-request-quote";
 import AcceptRequestQuote from "./accept-request-quote";
+import DeleteRequestQuote from "./delete-request-quote";
 
 export default function RequestQuoteList() {
   const { data, isLoading } = useGetRequestQuote();
@@ -27,6 +28,7 @@ export default function RequestQuoteList() {
             <div className="flex space-x-1">
               <UpdateRequestQuote quote={quote} />
               <AcceptRequestQuote id={quote.id} />
+              <DeleteRequestQuote id={quote.id} />
             </div>
           </div>
           <h2 className="p-2 text-gray-800">{quote.content}</h2>

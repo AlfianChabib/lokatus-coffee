@@ -59,6 +59,9 @@ export const updateRequestQuoteSchema = z.object({
 
 export const acceptRequestQuoteSchema = z.object({ id: z.string() });
 
+export const deleteRequestQuoteSchema = z.object({ id: z.string() });
+
+export type DeleteRequestQuoteSchema = z.infer<typeof deleteRequestQuoteSchema>;
 export type AcceptRequestQuoteSchema = z.infer<typeof acceptRequestQuoteSchema>;
 export type UpdateRequestQuoteSchema = z.infer<typeof updateRequestQuoteSchema>;
 export type RequestQuoteSchema = z.infer<typeof requestQuoteSchema>;
