@@ -1,7 +1,8 @@
-import { User } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { JwtVariables } from "hono/jwt";
 
 export type Variables = {
+  db: PrismaClient;
   passkey: string;
   userId: string;
   user?: Omit<User, "password" | "createdAt" | "updatedAt">;

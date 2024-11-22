@@ -1,20 +1,28 @@
 import { type NextRequest, NextResponse, userAgent } from "next/server";
-import { getSession } from "./utils/getSession";
+// import { getSession } from "./utils/getSession";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const cookies = req.cookies;
 
   if (pathname === "/" || pathname === "/login") {
-    const session = await getSession();
-    if (session) {
+    // const session = await getSession();
+    // if (session) {
+    //   return NextResponse.redirect(new URL("/dashboard", req.url));
+    // }
+    const quoteToken = cookies.get("quote");
+    if (quoteToken && quoteToken.value) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
   }
 
   if (pathname.startsWith("/dashboard")) {
-    const session = await getSession();
-    if (!session) {
+    // const session = await getSession();
+    // if (!session) {
+    //   return NextResponse.redirect(new URL("/login", req.url));
+    // }
+    const quoteToken = cookies.get("quote");
+    if (quoteToken && quoteToken.value) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
     return NextResponse.next();
@@ -62,3 +70,7 @@ export async function middleware(req: NextRequest) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/", "/login", "/dashboard", "/passkey", "/quote", "/request", "/mood"],
+};

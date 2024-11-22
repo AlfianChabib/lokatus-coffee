@@ -1,9 +1,17 @@
-import { getSession } from "@/utils/getSession";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function Page() {
-  const session = await getSession();
-  if (session) {
-    redirect("/dashboard/quotes");
-  } else redirect("/login");
+import { useSession } from "@/components/providers/SessionProvider";
+import { useRouter } from "next/navigation";
+
+export default function DashboardPage() {
+  const router = useRouter();
+  const session = useSession();
+
+  if (session && session.username) {
+    router.push("/dashboard/quotes");
+  } else {
+    router.push("/login");
+  }
+
+  return;
 }

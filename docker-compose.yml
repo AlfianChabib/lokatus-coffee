@@ -1,20 +1,18 @@
 services:
   db:
+    container_name: db
     image: postgres:16-alpine
-    container_name: lokatus-db
     environment:
       POSTGRES_USER: lokatus
       POSTGRES_PASSWORD: lokatus
       POSTGRES_DB: lokatus
-    volumes:
-      - db:/var/lib/postgresql/data
     ports:
       - 5433:5432
     networks:
       - lokatus-network
 
   web:
-    container_name: lokatus-web
+    container_name: web
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,13 +21,11 @@ services:
     depends_on:
       - db
     environment:
-      NODE_ENV: production
-      DATABASE_URL: postgresql://lokatus:lokatus@db:5432/lokatus
+      NODE_ENV: "production"
+      DATABASE_URL: postgresql://lokatus:lokatus@db:5432/lokatus?schema=public
+      NEXT_PUBLIC_APP_URL: http://0.0.0.0:3000
     networks:
       - lokatus-network
-
-volumes:
-  db:
 
 networks:
   lokatus-network:

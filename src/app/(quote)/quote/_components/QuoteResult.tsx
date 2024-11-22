@@ -64,7 +64,7 @@ export default function QuoteResult() {
             <div className="relative z-20 mt-16 flex flex-col p-6">
               <div className="absolute left-0 top-0 flex w-full items-center justify-center opacity-60">
                 <Image
-                  src="/logo-transparent.png"
+                  src="/images/logo-transparent.png"
                   alt="logo transparent"
                   priority
                   width={230}

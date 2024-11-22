@@ -1,5 +1,3 @@
-"use server";
-
 import { auth } from "@/services/client/auth.service";
 import { InferResponseType } from "hono";
 import { cookies } from "next/headers";
@@ -14,7 +12,7 @@ export async function getSession() {
       Authorization: `Bearer ${token}`,
       cookie: `token=${token}`,
     },
-    cache: "no-store",
+    cache: "no-cache",
   });
   const data = (await response.json()) as InferResponseType<typeof auth.session.$get>;
 

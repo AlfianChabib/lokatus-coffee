@@ -6,13 +6,21 @@ import { errorHandler } from "@/common/server/error-handler";
 import { Bindings, Variables } from "@/types/server";
 import { Hono } from "hono";
 import { authenticate, bearerToken } from "@/middleware/auth-middleware";
+import { HTTPException } from "hono/http-exception";
+import { prismaMiddleware } from "@/middleware/prisma-middleware";
 
 const auth = new Hono<{ Bindings: Bindings; Variables: Variables }>()
+  .use(prismaMiddleware)
+  .get("/", async (c) => {
+    return c.json({ message: "Welcome to Lokatus Coffee API" });
+  })
   .post("/login", zValidator("json", loginSchema), async (c) => {
     try {
       const { username, password } = c.req.valid("json");
+      const db = c.get("db");
 
-      const loginResponse = await login({ username, password }, c);
+      const loginResponse = await login({ username, password }, c, db);
+      if (!loginResponse) throw new HTTPException(401, { message: "Unauthorized" });
 
       return c.json(
         { success: true, message: "Login successful", token: loginResponse.token },

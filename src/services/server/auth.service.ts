@@ -1,16 +1,17 @@
 import { signToken } from "@/common/server/jsonwebtoken";
 import { comparePassword } from "@/common/server/password";
-import prisma from "@/lib/prisma";
+// import prisma from "@/lib/prisma";
 import { LoginSchema } from "@/validation/auth.validation";
 import { Context } from "hono";
 import { setCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
 import { env } from "hono/adapter";
+import { PrismaClient } from "@prisma/client";
 
-export const login = async (payload: LoginSchema, c: Context) => {
+export const login = async (payload: LoginSchema, c: Context, db: PrismaClient) => {
   const { TOKEN_JWT_SECRET } = env<{ TOKEN_JWT_SECRET: string }>(c);
 
-  const user = await prisma.user.findFirst({ where: { username: payload.username } });
+  const user = await db.user.findFirst({ where: { username: payload.username } });
   if (!user) throw new HTTPException(400, { message: "No user found" });
 
   const isPasswordCorrect = comparePassword(payload.password, user.password);
