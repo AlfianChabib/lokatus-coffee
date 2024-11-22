@@ -18,13 +18,14 @@ import { useLogin } from "@/hooks/auth/useLogin";
 export default function LoginForm() {
   const { mutate, isPending } = useLogin();
 
-  const form = useForm({
+  const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: { username: "", password: "" },
   });
 
   const handleSubmit = (data: LoginSchema) => {
     mutate(data);
+    form.reset();
   };
 
   return (
@@ -38,7 +39,7 @@ export default function LoginForm() {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} autoFocus={true} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

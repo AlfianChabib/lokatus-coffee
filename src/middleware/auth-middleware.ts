@@ -13,6 +13,7 @@ const factory = createFactory<{ Bindings: Bindings; Variables: Variables }>();
 
 export const bearerToken = factory.createMiddleware(async (c, next) => {
   const authorization = bearerAuth({
+    token: c.req.header("Authorization")?.split(" ")[1],
     headerName: "Authorization",
     verifyToken: async (token) => {
       if (!token) return false;

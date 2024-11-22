@@ -24,8 +24,8 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .route("/admin", admin)
   .route("/backgrounds", backgrounds);
 
-app.use(logger());
-app.use(prettyJSON());
+app.use("*", logger());
+app.use("*", prettyJSON());
 app.use("*", cors({ origin: process.env.NEXT_PUBLIC_APP_URL! }));
 app.use("*", csrf({ origin: process.env.NEXT_PUBLIC_APP_URL! }));
 app.use("*", secureHeaders({ xFrameOptions: false, xXssProtection: false }));
@@ -46,7 +46,7 @@ app.use(async (c, next) => {
 });
 
 app.onError((err, c) => {
-  console.error(err);
+  console.error(err.message, c.req.url);
   if (err instanceof HTTPException) {
     return c.json({ success: false, message: err.message }, err.status);
   }
@@ -54,16 +54,6 @@ app.onError((err, c) => {
 });
 
 app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
-
-app.get("/ping", async (c) => {
-  const db = c.get("db");
-  const quote = await db.quote.findMany();
-  return c.json({ message: "pong", quote });
-});
-app.get("/env", async (c) => {
-  const enviroenment = env(c);
-  return c.json(enviroenment);
-});
 
 export const GET = handle(app);
 export const POST = handle(app);

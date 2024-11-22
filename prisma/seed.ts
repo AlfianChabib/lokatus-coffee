@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const adminSeed = [
   { username: "superadmin", password: "superadmin", role: "SUPER_ADMIN" },
-  { username: "admin", password: "admin", role: "ADMIN" },
+  { username: "admin", password: "adminadmin", role: "ADMIN" },
 ] satisfies { username: string; password: string; role: Role }[];
 
 async function main() {
@@ -16,15 +16,18 @@ async function main() {
         content: quote.content,
         author: quote.author,
         mood: quote.mood === "happy" ? "HAPPY" : "SAD",
-        isActive: true,
-        canShow: true,
+        isActive: quote.isActive,
+        canShow: quote.canShow,
+        status: quote.status === "REQUESTED" ? "REQUESTED" : "APPROVED",
       },
     });
   });
 
   const admin = adminSeed.map(async (user) => {
-    return await prisma.user.create({
-      data: { username: user.username, password: hashPassword(user.password), role: user.role },
+    return await prisma.user.upsert({
+      where: { username: user.username },
+      create: { username: user.username, password: hashPassword(user.password), role: user.role },
+      update: {},
     });
   });
 

@@ -56,6 +56,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# COPY --chown=nextjs:nodejs prisma ./prisma/
+# COPY --chown=nextjs:nodejs run.sh ./
+# RUN chmod +x run.sh
 
 USER nextjs
 
@@ -66,5 +69,6 @@ ENV PORT=3000
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
-CMD ["node","--trace-warnings", "server.js"]
-# CMD ["node", "server.js"]
+# CMD ["node","--trace-warnings", "server.js"]
+CMD ["node", "server.js"]
+# CMD [ "sh", "run.sh" ]

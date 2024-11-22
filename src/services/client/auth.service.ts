@@ -13,7 +13,10 @@ export const login = async (payload: LoginSchema) => {
 };
 
 export const logout = async () => {
-  const response = await auth.logout.$post();
+  const token = localStorage.getItem("token");
+  const response = await auth.logout.$post({
+    header: { authorization: `Bearer ${token}` },
+  });
 
   const data = await response.json();
   if (!response.ok) return Promise.reject(data);

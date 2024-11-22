@@ -7,8 +7,9 @@ export default function useAcceptRequestQuote() {
   return useMutation({
     mutationFn: acceptRequestQuote,
     onSuccess: (data) => {
-      toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["request-quotes"] });
+      queryClient.invalidateQueries({ queryKey: ["quotes"] });
+      toast.success(data.message);
     },
     onError: (error) => {
       toast.error(error.message);

@@ -97,7 +97,7 @@ export const postMood = async (mood: Mood, c: Context) => {
   setCookie(c, "quote", quoteToken, {
     path: "/",
     httpOnly: true,
-    sameSite: "Lax",
+    sameSite: "lax",
     ...(isDev ? { maxAge: 60 * 60 } : { expires: getNextDay() }),
     secure: process.env.NODE_ENV === "production",
   });
@@ -131,7 +131,7 @@ export const checkPasskey = async (passKey: string, c: Context) => {
   setCookie(c, "passkey", passkey.key, {
     path: "/",
     ...(isDev ? { maxAge: 60 * 60 } : { expires: getNextDay() }),
-    sameSite: "Lax",
+    sameSite: "lax",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   });

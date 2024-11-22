@@ -18,9 +18,9 @@ export const useLogOut = () => {
     mutationFn: logout,
     onSuccess: (data) => {
       localStorage.removeItem("token");
-      router.push("/login");
       queryClient.resetQueries();
       toast.success(data.message);
+      router.push("/login");
     },
     onError: (error) => {
       toast.error(error.message);

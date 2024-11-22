@@ -1,3 +1,5 @@
+"use client";
+
 import { queryClient } from "@/lib/query-client";
 import { auth, login } from "@/services/client/auth.service";
 import { useMutation } from "@tanstack/react-query";
@@ -18,7 +20,7 @@ export const useLogin = () => {
       localStorage.setItem("token", data.token);
       queryClient.invalidateQueries({ queryKey: ["session"] });
       toast.success(data.message);
-      router.push("/dashboard");
+      router.push("/dashboard/quotes");
     },
     onError: (error) => {
       toast.error(error.message);
