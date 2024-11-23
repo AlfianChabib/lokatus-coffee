@@ -32,21 +32,27 @@ app.use("*", secureHeaders({ xFrameOptions: false, xXssProtection: false }));
 app.use(prismaMiddleware);
 app.use(async (c, next) => {
   const {
-    NEXY_PUBLIC_CLOUDINARY_CLOUD_NAME,
-    NEXY_PUBLIC_CLOUDINARY_API_KEY,
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    NEXT_PUBLIC_CLOUDINARY_API_KEY,
     CLOUDINARY_API_SECRET,
   } = env(c);
 
+  console.log(
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    NEXT_PUBLIC_CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET,
+  );
+
   cloudinary.config({
-    cloud_name: NEXY_PUBLIC_CLOUDINARY_CLOUD_NAME,
-    api_key: NEXY_PUBLIC_CLOUDINARY_API_KEY,
+    cloud_name: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: NEXT_PUBLIC_CLOUDINARY_API_KEY,
     api_secret: CLOUDINARY_API_SECRET,
   });
   await next();
 });
 
 app.onError((err, c) => {
-  console.error(err.message, c.req.url);
+  console.error(err, c.req.url);
   if (err instanceof HTTPException) {
     return c.json({ success: false, message: err.message }, err.status);
   }

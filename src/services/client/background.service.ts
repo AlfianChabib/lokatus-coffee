@@ -8,8 +8,11 @@ export const bgClient = hc<BackgroundsType>(`${process.env.NEXT_PUBLIC_APP_URL!}
 });
 
 export const postBackground = async (payload: File) => {
-  const response = await bgClient.index.$post({
-    form: { image: payload },
+  const formData = new FormData();
+  formData.append("image", payload);
+
+  const response = await bgClient.test.$post({
+    form: { image: formData.get("image") },
   });
 
   const data = await response.json();
@@ -28,8 +31,11 @@ export const getBackgrounds = async () => {
 };
 
 export const updateBackground = async (payload: { id: string; image: File }) => {
+  const formData = new FormData();
+  formData.append("image", payload.image);
+
   const response = await bgClient[":id"].$patch({
-    form: { image: payload.image },
+    form: { image: formData.get("image") },
     param: { id: payload.id },
   });
 
