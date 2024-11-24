@@ -12,7 +12,7 @@ import {
 import { Mood, Prisma } from "@prisma/client";
 import { Context } from "hono";
 import { env } from "hono/adapter";
-import { setCookie } from "hono/cookie";
+import { deleteCookie, setCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
 import { getPasskey } from "./admin.service";
 
@@ -91,22 +91,48 @@ export const postMood = async (mood: Mood, c: Context) => {
 
   const quoteId = await getRandomQuoteId(mood);
   const backgroundId = await getRandomBackgroundId();
+  const requestQuoteId = await prisma.quoteRequest.create({ data: { status: "PENDING" } });
+  if (!requestQuoteId || !requestQuoteId.id)
+    throw new HTTPException(500, { message: "Internal Server Error" });
 
-  const quoteToken = signQuoteToken({ quoteId, backgroundId }, QUOTE_JWT_SECRET);
+  const quoteToken = signQuoteToken(
+    { quoteId, backgroundId, requestQuoteId: requestQuoteId.id },
+    QUOTE_JWT_SECRET,
+  );
 
+  deleteCookie(c, "passkey");
   setCookie(c, "quote", quoteToken, {
     path: "/",
     httpOnly: true,
     sameSite: "lax",
     ...(isDev ? { maxAge: 60 * 60 } : { expires: getNextDay() }),
-    secure: process.env.NODE_ENV === "production",
+    secure: !isDev,
   });
 };
 
-export const requestQuote = async (payload: RequestQuoteSchema, c: Context) => {
+export const verifyRequestQuote = async (requestQuoteId: string) => {
+  const existRequestQuote = await prisma.quoteRequest.findUnique({ where: { id: requestQuoteId } });
+
+  if (!existRequestQuote) throw new HTTPException(404, { message: "Not Found" });
+  if (existRequestQuote.status === "REQUESTED")
+    throw new HTTPException(404, { message: "You can only request one quote in one day" });
+
+  return;
+};
+
+export const requestQuote = async (
+  payload: RequestQuoteSchema,
+  requestQuoteId: string,
+  c: Context,
+) => {
   const { NODE_ENV } = env(c);
   const quote = await prisma.quote.create({
     data: { ...payload, canShow: false, isActive: false, status: "REQUESTED" },
+  });
+
+  await prisma.quoteRequest.update({
+    where: { id: requestQuoteId },
+    data: { status: "REQUESTED" },
   });
 
   setCookie(c, "requestId", quote.id.toString(), {

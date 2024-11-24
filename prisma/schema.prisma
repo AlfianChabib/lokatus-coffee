@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
-  binaryTargets   = ["native", "linux-musl"]
+  // binaryTargets   = ["native", "linux-musl"]
 }
 
 datasource db {
@@ -24,6 +24,11 @@ enum Status {
   APPROVED
 }
 
+enum QuoteRequestStatus {
+  PENDING
+  REQUESTED
+}
+
 model Quote {
   id        String   @id @unique @default(cuid())
   content   String
@@ -36,6 +41,13 @@ model Quote {
   updatedAt DateTime @updatedAt
 
   @@map("quotes")
+}
+
+model QuoteRequest {
+  id     String             @id @unique @default(cuid())
+  status QuoteRequestStatus @default(PENDING)
+
+  @@map("quote_requests")
 }
 
 model User {

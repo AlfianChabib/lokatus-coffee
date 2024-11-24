@@ -37,12 +37,6 @@ app.use(async (c, next) => {
     CLOUDINARY_API_SECRET,
   } = env(c);
 
-  console.log(
-    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-    NEXT_PUBLIC_CLOUDINARY_API_KEY,
-    CLOUDINARY_API_SECRET,
-  );
-
   cloudinary.config({
     cloud_name: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     api_key: NEXT_PUBLIC_CLOUDINARY_API_KEY,
@@ -52,7 +46,7 @@ app.use(async (c, next) => {
 });
 
 app.onError((err, c) => {
-  console.error(err, c.req.url);
+  console.error(err.message, c.req.url);
   if (err instanceof HTTPException) {
     return c.json({ success: false, message: err.message }, err.status);
   }

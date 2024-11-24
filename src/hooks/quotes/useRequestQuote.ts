@@ -9,7 +9,7 @@ export default function useRequestQuote() {
     mutationFn: requestQuote,
     onSuccess: (data) => {
       toast.success(data.message);
-      ruoter.push("/");
+      ruoter.push("/quote");
     },
     onError: (error) => {
       toast.error(error.message);

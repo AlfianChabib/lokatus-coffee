@@ -27,6 +27,7 @@ import {
   requestQuote,
   updateRequestQuote,
   updateStatusQuote,
+  verifyRequestQuote,
 } from "@/services/server/quote.service";
 import { errorHandler } from "@/common/server/error-handler";
 import { authenticate, authorize, bearerToken } from "@/middleware/auth-middleware";
@@ -131,8 +132,20 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .post("/request", zValidator("json", requestQuoteSchema), async (c) => {
     try {
       const payload = c.req.valid("json");
+      const quoteCookie = getCookie(c, "quote");
+      const { QUOTE_JWT_SECRET } = env(c);
+      if (!quoteCookie) throw new HTTPException(401, { message: "Unauthorized" });
+      const quotePayload = verifyQuoteToken(quoteCookie, QUOTE_JWT_SECRET);
+      if (!quotePayload) {
+        deleteCookie(c, "quote");
+        throw new HTTPException(401, { message: "Unauthorized" });
+      }
 
-      await requestQuote(payload, c);
+      if (!quoteCookie) throw new HTTPException(401, { message: "Unauthorized" });
+
+      await verifyRequestQuote(quotePayload.requestQuoteId);
+
+      await requestQuote(payload, quotePayload.requestQuoteId, c);
 
       return c.json({ message: "Request quote successfully" }, 201);
     } catch (error) {
@@ -183,6 +196,8 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .post("/mood", zValidator("json", postMoodSchema), async (c) => {
     try {
       const { mood } = c.req.valid("json");
+      const passkey = getCookie(c, "passkey");
+      if (!passkey) throw new HTTPException(401, { message: "Unauthorized" });
 
       await postMood(mood, c);
 

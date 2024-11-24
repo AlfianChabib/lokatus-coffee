@@ -30,4 +30,5 @@ export interface Passkey {
 export type QuoteTokenPayload = {
   quoteId: string;
   backgroundId: string;
+  requestQuoteId: string;
 };

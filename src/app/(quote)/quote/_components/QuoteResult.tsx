@@ -1,7 +1,5 @@
 "use client";
 
-import { getQuote } from "@/services/client/quote.service";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Loading from "../loading";
 import { CldImage } from "next-cloudinary";
@@ -14,33 +12,78 @@ import QuoteIconGray from "@/components/svgs/quoteIconGray";
 import QuoteIconWhite from "@/components/svgs/quoteIconWhite";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import { useEffect, useRef } from "react";
+import useGetQuote from "@/hooks/quotes/useGetQuote";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function QuoteResult() {
-  const router = useRouter();
-
+  const { quoteResult, isLoading, isError } = useGetQuote();
   const {
-    data: quoteResult,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["quote"],
-    queryFn: getQuote,
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    state,
+    convertToPng,
+    ref,
+    displayImage,
+    downloadImage,
+    imageRef,
+    openDialog,
+    setOpenDialog,
+  } = useDownloadQuote({
+    author: quoteResult?.quote.author,
   });
-  const { state, convertToPng, ref } = useDownloadQuote({ author: quoteResult?.quote.author });
+
+  const router = useRouter();
+  const initialRef = useRef(true);
+
+  useEffect(() => {
+    if (!initialRef.current || isLoading) {
+      return;
+    }
+    initialRef.current = false;
+    convertToPng();
+  }, [convertToPng, isLoading]);
 
   if (isError) router.push("/");
   if (isLoading || !quoteResult) return <Loading />;
 
   return (
-    <div className="flex h-full w-full flex-col gap-2">
-      <div className="size-full overflow-hidden rounded-lg shadow-xl">
+    <div className="my-16 flex h-full w-full flex-col gap-2">
+      <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
+        <AlertDialogTrigger>
+          <span className="sr-only">Alert</span>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="w-[96%] rounded-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Successfully downloaded</AlertDialogTitle>
+            <AlertDialogDescription>
+              Congrats you have successfully downloaded the quote, check your download folder.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Link href={"/request"}>Post Quote</Link>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <div className="relative size-full overflow-hidden rounded-lg shadow-xl">
+        <div ref={imageRef} className={`absolute flex ${displayImage ? "z-10" : "z-0"}`}></div>
         <AspectRatio
-          ratio={9 / 16}
-          className="relative flex w-full items-center justify-center"
           ref={ref}
+          ratio={9 / 16}
+          className={`relative flex w-full items-center justify-center ${displayImage ? "z-0" : "z-10"}`}
         >
           <div className="absolute flex h-full w-full items-center justify-center">
             <CldImage
@@ -94,9 +137,17 @@ export default function QuoteResult() {
           </div>
         </AspectRatio>
       </div>
-      <Submit onClick={convertToPng} disabled={state.isLoading}>
-        Download
-      </Submit>
+      <div className="flex w-full gap-2">
+        <Submit onClick={downloadImage} disabled={state.isLoading} className="w-full">
+          Download
+        </Submit>
+        <Link
+          href={"/request"}
+          className={buttonVariants({ variant: "outline", className: "w-full" })}
+        >
+          Post Quote
+        </Link>
+      </div>
     </div>
   );
 }
