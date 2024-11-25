@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
+    "deploy": "npm run build && cp cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/ && pm2 restart lokatus",
     "db:migrate:deploy": "dotenv -e .env.production -- npx prisma migrate deploy",
     "db:seed": "dotenv -e .env.production -- npx prisma db seed"
   },

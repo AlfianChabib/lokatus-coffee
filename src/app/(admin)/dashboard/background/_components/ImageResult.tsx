@@ -38,6 +38,7 @@ export default function ImageResult({
             width={1080}
             height={1920}
             className="size-full object-cover"
+            crossOrigin="anonymous"
           />
           <div className="absolute right-0 top-0 m-1 flex flex-col gap-1">
             <UpdateBackground id={id} />

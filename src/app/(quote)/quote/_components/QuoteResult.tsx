@@ -102,6 +102,7 @@ export default function QuoteResult() {
               priority
               width={1080}
               height={1920}
+              crossOrigin="anonymous"
               onLoadCapture={() => {
                 setLoadedImage(loadedImage + 1);
               }}
@@ -125,6 +126,7 @@ export default function QuoteResult() {
                   priority
                   width={230}
                   height={230}
+                  crossOrigin="anonymous"
                   onLoadCapture={() => {
                     setLoadedImage(loadedImage + 1);
                   }}
