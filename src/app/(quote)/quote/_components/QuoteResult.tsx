@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import QuoteIconGray from "@/components/svgs/quoteIconGray";
 import QuoteIconWhite from "@/components/svgs/quoteIconWhite";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
-import Image from "next/image";
+// import Image from "next/image";
 import { useState } from "react";
 import useGetQuote from "@/hooks/quotes/useGetQuote";
 import Link from "next/link";
@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/dialog";
 import { Maximize } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import LogoTransparent from "./LogoTransparent";
 
 export default function QuoteResult() {
   const { quoteResult, isLoading, isError } = useGetQuote();
@@ -120,7 +121,7 @@ export default function QuoteResult() {
             <QuoteIconWhite />
             <div className="relative z-20 mt-16 flex flex-col p-6">
               <div className="absolute left-0 top-0 flex w-full items-center justify-center opacity-60">
-                <Image
+                {/* <Image
                   src="/images/logo-transparent.png"
                   alt="logo transparent"
                   priority
@@ -131,7 +132,8 @@ export default function QuoteResult() {
                     setLoadedImage(loadedImage + 1);
                   }}
                   className="mt-8"
-                />
+                /> */}
+                <LogoTransparent />
               </div>
               <h2 className="text-4xl font-bold text-[#282828]">Quote.</h2>
               <div className="mt-4 space-y-4">
