@@ -8,6 +8,7 @@ const nextConfig = {
   },
   output: "standalone",
   reactStrictMode: true,
+  crossOrigin: "anonymous",
 };
 
 export default nextConfig;
