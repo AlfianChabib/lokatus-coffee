@@ -10,8 +10,8 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
   variable: "--font-inter",
-  preload: true,
-  fallback: ["Helvetica", "Arial", "sans-serif"],
+  preload: false,
+  adjustFontFallback: false,
 });
 
 const montserrat = Montserrat({
@@ -19,8 +19,8 @@ const montserrat = Montserrat({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-montserrat",
-  preload: true,
-  fallback: ["Helvetica", "Arial", "sans-serif"],
+  preload: false,
+  adjustFontFallback: false,
 });
 
 const bellefair = Bellefair({
@@ -28,7 +28,8 @@ const bellefair = Bellefair({
   subsets: ["hebrew"],
   display: "swap",
   variable: "--font-bellefair",
-  preload: true,
+  preload: false,
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {
