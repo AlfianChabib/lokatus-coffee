@@ -12,7 +12,7 @@ import QuoteIconGray from "@/components/svgs/quoteIconGray";
 import QuoteIconWhite from "@/components/svgs/quoteIconWhite";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useGetQuote from "@/hooks/quotes/useGetQuote";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -39,20 +39,21 @@ export default function QuoteResult() {
     imageRef,
     openDialog,
     setOpenDialog,
-  } = useDownloadQuote({
-    author: quoteResult?.quote.author,
-  });
+  } = useDownloadQuote({ author: quoteResult?.quote.author });
+  const [loadedImage, setLoadedImage] = useState(0);
 
   const router = useRouter();
   const initialRef = useRef(true);
 
+  console.log(loadedImage, displayImage);
+
   useEffect(() => {
-    if (!initialRef.current || isLoading) {
+    if (!initialRef.current || isLoading || loadedImage !== 2) {
       return;
     }
     initialRef.current = false;
     convertToPng();
-  }, [convertToPng, isLoading]);
+  }, [convertToPng, isLoading, loadedImage]);
 
   if (isError) router.push("/");
   if (isLoading || !quoteResult) return <Loading />;
@@ -79,11 +80,14 @@ export default function QuoteResult() {
         </AlertDialogContent>
       </AlertDialog>
       <div className="relative size-full overflow-hidden rounded-lg shadow-xl">
-        <div ref={imageRef} className={`absolute flex ${displayImage ? "z-10" : "z-0"}`}></div>
+        <div
+          ref={imageRef}
+          className={`absolute flex ${displayImage ? "z-10" : "z-0 hidden"}`}
+        ></div>
         <AspectRatio
           ref={ref}
           ratio={9 / 16}
-          className={`relative flex w-full items-center justify-center ${displayImage ? "z-0" : "z-10"}`}
+          className={`relative flex w-full items-center justify-center ${displayImage ? "z-0 hidden" : "z-10"}`}
         >
           <div className="absolute flex h-full w-full items-center justify-center">
             <CldImage
@@ -92,6 +96,9 @@ export default function QuoteResult() {
               priority
               width={1080}
               height={1920}
+              onLoadCapture={() => {
+                setLoadedImage(loadedImage + 1);
+              }}
               className="size-full object-cover"
             />
           </div>
@@ -112,6 +119,9 @@ export default function QuoteResult() {
                   priority
                   width={230}
                   height={230}
+                  onLoadCapture={() => {
+                    setLoadedImage(loadedImage + 1);
+                  }}
                   className="mt-8"
                 />
               </div>
