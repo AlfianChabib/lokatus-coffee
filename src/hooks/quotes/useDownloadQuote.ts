@@ -34,7 +34,6 @@ export default function useDownloadQuote({ author }: { author: string | undefine
     convertToPng();
     download(image!, author + ".png")
       .then(() => {
-        toast.success("Downloaded successfully");
         setOpenDialog(true);
       })
       .catch((error) => {

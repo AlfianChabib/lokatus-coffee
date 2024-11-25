@@ -12,7 +12,7 @@ import QuoteIconGray from "@/components/svgs/quoteIconGray";
 import QuoteIconWhite from "@/components/svgs/quoteIconWhite";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import useGetQuote from "@/hooks/quotes/useGetQuote";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -27,33 +27,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Maximize } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function QuoteResult() {
   const { quoteResult, isLoading, isError } = useGetQuote();
-  const {
-    state,
-    convertToPng,
-    ref,
-    displayImage,
-    downloadImage,
-    imageRef,
-    openDialog,
-    setOpenDialog,
-  } = useDownloadQuote({ author: quoteResult?.quote.author });
+  const { state, convertToPng, ref, downloadImage, imageRef, openDialog, setOpenDialog } =
+    useDownloadQuote({ author: quoteResult?.quote.author });
   const [loadedImage, setLoadedImage] = useState(0);
 
   const router = useRouter();
-  const initialRef = useRef(true);
-
-  console.log(loadedImage, displayImage);
-
-  useEffect(() => {
-    if (!initialRef.current || isLoading || loadedImage !== 2) {
-      return;
-    }
-    initialRef.current = false;
-    convertToPng();
-  }, [convertToPng, isLoading, loadedImage]);
 
   if (isError) router.push("/");
   if (isLoading || !quoteResult) return <Loading />;
@@ -80,14 +71,29 @@ export default function QuoteResult() {
         </AlertDialogContent>
       </AlertDialog>
       <div className="relative size-full overflow-hidden rounded-lg shadow-xl">
-        <div
-          ref={imageRef}
-          className={`absolute flex ${displayImage ? "z-10" : "z-0 hidden"}`}
-        ></div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              className="absolute right-2 top-2 z-20 rounded-full p-2 opacity-50"
+              size={"icon"}
+              onClick={convertToPng}
+            >
+              <Maximize />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="flex w-[96%] overflow-hidden rounded-md border-none p-0">
+            <DialogTitle className="sr-only">Image</DialogTitle>
+            <DialogDescription className="sr-only">Image</DialogDescription>
+            {state.isLoading && <Skeleton className="flex h-full w-[96%]" />}
+            <div className="relative flex">
+              <div ref={imageRef}></div>
+            </div>
+          </DialogContent>
+        </Dialog>
         <AspectRatio
           ref={ref}
           ratio={9 / 16}
-          className={`relative flex w-full items-center justify-center ${displayImage ? "z-0 hidden" : "z-10"}`}
+          className={`relative flex w-full items-center justify-center`}
         >
           <div className="absolute flex h-full w-full items-center justify-center">
             <CldImage
