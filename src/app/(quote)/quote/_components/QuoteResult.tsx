@@ -11,8 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import QuoteIconGray from "@/components/svgs/quoteIconGray";
 import QuoteIconWhite from "@/components/svgs/quoteIconWhite";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
-// import Image from "next/image";
-import { useState } from "react";
 import useGetQuote from "@/hooks/quotes/useGetQuote";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -39,11 +37,14 @@ import { Maximize } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import LogoTransparent from "./LogoTransparent";
 
-export default function QuoteResult() {
+type QuoteResultProps = {
+  vendor: string | null;
+};
+
+export default function QuoteResult({ vendor }: QuoteResultProps) {
   const { quoteResult, isLoading, isError } = useGetQuote();
   const { state, convertToPng, ref, downloadImage, imageRef, openDialog, setOpenDialog } =
     useDownloadQuote({ author: quoteResult?.quote.author });
-  const [loadedImage, setLoadedImage] = useState(0);
 
   const router = useRouter();
 
@@ -72,25 +73,27 @@ export default function QuoteResult() {
         </AlertDialogContent>
       </AlertDialog>
       <div className="relative size-full overflow-hidden rounded-lg shadow-xl">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              className="absolute right-2 top-2 z-20 rounded-full p-2 opacity-50"
-              size={"icon"}
-              onClick={convertToPng}
-            >
-              <Maximize />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="flex w-[96%] overflow-hidden rounded-md border-none p-0">
-            <DialogTitle className="sr-only">Image</DialogTitle>
-            <DialogDescription className="sr-only">Image</DialogDescription>
-            {state.isLoading && <Skeleton className="flex h-full w-[96%]" />}
-            <div className="relative flex">
-              <div ref={imageRef}></div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        {vendor === "Apple" && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                className="absolute right-2 top-2 z-20 rounded-full p-2 opacity-50"
+                size={"icon"}
+                onClick={convertToPng}
+              >
+                <Maximize />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="flex w-[96%] overflow-hidden rounded-md border-none p-0">
+              <DialogTitle className="sr-only">Image</DialogTitle>
+              <DialogDescription className="sr-only">Image</DialogDescription>
+              {state.isLoading && <Skeleton className="flex h-full w-[96%]" />}
+              <div className="relative flex">
+                <div ref={imageRef}></div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
         <AspectRatio
           ref={ref}
           ratio={9 / 16}
@@ -104,9 +107,6 @@ export default function QuoteResult() {
               width={1080}
               height={1920}
               crossOrigin="anonymous"
-              onLoadCapture={() => {
-                setLoadedImage(loadedImage + 1);
-              }}
               className="size-full object-cover"
             />
           </div>
@@ -158,9 +158,11 @@ export default function QuoteResult() {
         </AspectRatio>
       </div>
       <div className="flex w-full gap-2">
-        <Submit onClick={downloadImage} disabled={state.isLoading} className="w-full">
-          Download
-        </Submit>
+        {vendor !== "Apple" && (
+          <Submit onClick={downloadImage} disabled={state.isLoading} className="w-full">
+            Download
+          </Submit>
+        )}
         <Link
           href={"/request"}
           className={buttonVariants({ variant: "outline", className: "w-full" })}

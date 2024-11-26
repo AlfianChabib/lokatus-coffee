@@ -10,7 +10,7 @@ export default function LogoTransparent() {
     const getBuffer = async () => {
       const res = await fetch("/images/logo-transparent.png");
       const blob = await res.blob();
-      const image = new Image();
+      const image = new Image(230, 230);
       const reader = new FileReader();
       reader.readAsDataURL(blob);
       reader.onloadend = () => {
@@ -24,7 +24,7 @@ export default function LogoTransparent() {
   return (
     <div
       ref={divRef}
-      className="absolute left-0 top-0 flex w-full items-center justify-center opacity-60"
+      className="absolute left-0 top-0 flex w-full items-center justify-center pt-8 opacity-60"
     ></div>
   );
 }

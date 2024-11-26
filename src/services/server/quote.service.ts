@@ -149,6 +149,7 @@ export const checkPasskey = async (passKey: string, c: Context) => {
   const isDev = NODE_ENV === "development";
 
   const { passkey } = await getPasskey(PASSKEY_URL);
+  console.log(passKey);
 
   if (passkey.key !== passKey) {
     throw new HTTPException(401, { message: "Invalid passkey, please enter valid passkey" });

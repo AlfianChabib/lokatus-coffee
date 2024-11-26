@@ -33,6 +33,13 @@ export async function middleware(req: NextRequest) {
 
   if (pathname.startsWith("/quote")) {
     const quoteToken = cookies.get("quote");
+    const { device } = userAgent(req);
+    const newHeader = new Headers(req.headers);
+
+    if (device.vendor) {
+      newHeader.set("vendor", device.vendor);
+      return NextResponse.next({ request: { headers: newHeader } });
+    }
 
     if (quoteToken && quoteToken.value) {
       return NextResponse.next();
