@@ -1,19 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Loading from "../loading";
-import { CldImage } from "next-cloudinary";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import Submit from "@/components/form-fields/Submit";
+import useGetQuote from "@/hooks/quotes/useGetQuote";
 import useDownloadQuote from "@/hooks/quotes/useDownloadQuote";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-import QuoteIconGray from "@/components/svgs/quoteIconGray";
-import QuoteIconWhite from "@/components/svgs/quoteIconWhite";
+import { Maximize } from "lucide-react";
+import { CldImage } from "next-cloudinary";
+import { useRouter } from "next/navigation";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
-import useGetQuote from "@/hooks/quotes/useGetQuote";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +20,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -33,9 +27,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Maximize } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import Submit from "@/components/form-fields/Submit";
+import QuoteIconGray from "@/components/svgs/quoteIconGray";
+import QuoteIconWhite from "@/components/svgs/quoteIconWhite";
 import LogoTransparent from "./LogoTransparent";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { buttonVariants, Button } from "@/components/ui/button";
 
 type QuoteResultProps = {
   vendor: string | null;
@@ -121,18 +120,6 @@ export default function QuoteResult({ vendor }: QuoteResultProps) {
             <QuoteIconWhite />
             <div className="relative z-20 mt-16 flex flex-col p-6">
               <div className="absolute left-0 top-0 flex w-full items-center justify-center opacity-60">
-                {/* <Image
-                  src="/images/logo-transparent.png"
-                  alt="logo transparent"
-                  priority
-                  width={230}
-                  height={230}
-                  crossOrigin="anonymous"
-                  onLoadCapture={() => {
-                    setLoadedImage(loadedImage + 1);
-                  }}
-                  className="mt-8"
-                /> */}
                 <LogoTransparent />
               </div>
               <h2 className="text-4xl font-bold text-[#282828]">Quote.</h2>
@@ -167,7 +154,7 @@ export default function QuoteResult({ vendor }: QuoteResultProps) {
           href={"/request"}
           className={buttonVariants({ variant: "outline", className: "w-full" })}
         >
-          Post Quote
+          Create Quote
         </Link>
       </div>
     </div>

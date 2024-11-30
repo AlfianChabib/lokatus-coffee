@@ -22,5 +22,12 @@ export const ADMIN_MENU = [
   { title: "Admin", url: "/dashboard/admin", icon: Users, role: "SUPER_ADMIN" },
 ] satisfies AdminMenu[];
 
+export const MENU = [
+  { value: "All", label: "All" },
+  { value: "Coffee", label: "Coffee" },
+  { value: "Drink", label: "Drink" },
+  { value: "Food", label: "Food" },
+];
+
 export const MAX_LOGO_SIZE = 2 * 1024 * 1024;
 export const ACCEPTED_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];

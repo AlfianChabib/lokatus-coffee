@@ -2,7 +2,7 @@ import QuoteMenu from "@/app/(quote)/_components/QuoteMenu";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Header() {
+export default function MainHeader() {
   return (
     <nav className="fixed top-0 z-50 flex w-full justify-center border-b border-slate-200 bg-background/50 shadow-sm backdrop-blur-md">
       <div className="flex w-full max-w-7xl items-center justify-between p-3">
