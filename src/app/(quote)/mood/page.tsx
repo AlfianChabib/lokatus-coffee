@@ -7,7 +7,9 @@ const MoodForm = dynamic(() => import("./_components/mood-form"), {
 export default function page() {
   return (
     <div className="w-full px-2">
-      <MoodForm />
+      <div className="flex h-full min-h-screen w-full flex-col items-center justify-center">
+        <MoodForm />
+      </div>
     </div>
   );
 }

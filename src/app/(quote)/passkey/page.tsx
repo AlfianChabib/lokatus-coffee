@@ -6,8 +6,10 @@ const PasskeyForm = dynamic(() => import("./_components/passkey-form"), {
 
 export default function PasskeyPage() {
   return (
-    <div className="w-full px-2">
-      <PasskeyForm />
+    <div className="flex w-full px-2">
+      <div className="flex h-full min-h-screen w-full flex-col items-center justify-center">
+        <PasskeyForm />
+      </div>
     </div>
   );
 }

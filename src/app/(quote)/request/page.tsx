@@ -6,8 +6,10 @@ const RequestQuoteForm = dynamic(() => import("./_components/request-quote-form"
 
 export default function Page() {
   return (
-    <div>
-      <RequestQuoteForm />
+    <div className="w-full px-2">
+      <div className="flex h-full min-h-screen w-full flex-col items-center justify-center">
+        <RequestQuoteForm />
+      </div>
     </div>
   );
 }

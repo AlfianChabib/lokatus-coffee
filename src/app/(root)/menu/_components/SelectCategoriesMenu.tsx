@@ -15,7 +15,10 @@ export default function SelectCategoriesMenu() {
         <Button
           key={item.value}
           variant={menu === item.value ? "default" : "outline"}
-          className={cn("h-6 bg-transparent px-4", menu === item.value && "bg-blue-950")}
+          className={cn(
+            "h-6 bg-transparent px-4",
+            menu === item.value && "bg-blue-950 hover:bg-blue-950/80",
+          )}
           size={"sm"}
           onClick={() =>
             setSelectMenu({
