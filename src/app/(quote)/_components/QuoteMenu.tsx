@@ -49,7 +49,8 @@ export default function QuoteMenu() {
             <p>Menu</p>
           </Link>
           <Link
-            href="/menu"
+            target="_blank"
+            href="https://maps.app.goo.gl/e1fbDWGnf6GdZ4kw5"
             className="flex items-center space-x-3 rounded-md bg-blue-50/50 px-3 py-2"
           >
             <MapPin size={20} />
