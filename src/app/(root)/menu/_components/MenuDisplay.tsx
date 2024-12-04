@@ -22,7 +22,7 @@ export default function MenuDisplay({ menuData }: { menuData: Menu[] }) {
   }, [menuData, menu]);
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
+    <div className="grid h-full grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
       {displayMenu.map((data, index) => (
         <MenuCard key={index} menu={data} />
       ))}

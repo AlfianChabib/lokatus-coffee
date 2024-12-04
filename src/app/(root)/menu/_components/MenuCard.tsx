@@ -5,8 +5,8 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 
 export default function MenuCard({ menu }: { menu: Menu }) {
   return (
-    <div className="relative flex h-full max-h-96 flex-col overflow-hidden rounded-lg bg-blue-50/50 shadow-sm ring-1 ring-blue-500/30 transition-all hover:shadow-lg">
-      <div className="aspect-square w-full">
+    <div className="relative flex h-full max-h-96 flex-col rounded-lg bg-blue-50/50 shadow-sm ring-1 ring-blue-500/30 transition-all hover:shadow-lg">
+      <div className="flex aspect-square w-full overflow-hidden rounded-t-lg">
         <ContentfulImage image={menu.image} />
       </div>
       <div className="flex flex-col space-y-2 p-2 leading-6">
