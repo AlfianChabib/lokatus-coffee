@@ -18,7 +18,7 @@ export default function DeleteAdmin({ id }: { id: string }) {
 
   const { mutate: deleteAdmin, isPending } = useDeleteAdmin();
 
-  if (session.id !== id) return null;
+  if (session.id === id) return null;
 
   return (
     <AlertDialog>
