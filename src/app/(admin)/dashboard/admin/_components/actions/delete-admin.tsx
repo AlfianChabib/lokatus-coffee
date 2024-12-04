@@ -1,3 +1,4 @@
+import { useSession } from "@/components/providers/SessionProvider";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +14,11 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import useDeleteAdmin from "@/hooks/admin/useDeleteAdmin";
 
 export default function DeleteAdmin({ id }: { id: string }) {
+  const session = useSession();
+
   const { mutate: deleteAdmin, isPending } = useDeleteAdmin();
+
+  if (session.id !== id) return null;
 
   return (
     <AlertDialog>
@@ -30,7 +35,12 @@ export default function DeleteAdmin({ id }: { id: string }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => deleteAdmin(id)} disabled={isPending}>
+          <AlertDialogAction
+            onClick={() => {
+              deleteAdmin(id);
+            }}
+            disabled={isPending}
+          >
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>
