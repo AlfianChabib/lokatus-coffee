@@ -60,6 +60,11 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  if (pathname.startsWith("/quote")) {
+    const quoteToken = cookies.get("quote");
+    if (!quoteToken) return NextResponse.redirect(new URL("/passkey", req.url));
+  }
+
   if (pathname.startsWith("/request")) {
     const requestId = cookies.get("requestId");
     if (requestId && requestId.value) {
