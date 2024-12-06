@@ -215,7 +215,6 @@ const quotes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const quotePayload = verifyQuoteToken(quoteToken, QUOTE_JWT_SECRET);
       if (!quotePayload) {
         deleteCookie(c, "quote");
-        deleteCookie(c, "passkey");
         throw new HTTPException(401, { message: "Unauthorized" });
       }
 
