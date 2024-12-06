@@ -12,6 +12,7 @@ export default function useGetQuote() {
     staleTime: Infinity,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
+    refetchInterval: undefined,
   });
 
   return { quoteResult, isLoading, isError };
