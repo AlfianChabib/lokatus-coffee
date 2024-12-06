@@ -76,7 +76,3 @@ export async function middleware(req: NextRequest) {
 
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ["/quote", "/passkey", "/login", "/dashboard", "/request", "/mood"],
-};
