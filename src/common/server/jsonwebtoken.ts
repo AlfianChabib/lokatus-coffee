@@ -19,7 +19,7 @@ export const verifyToken = (token: string, secret: string) => {
 export const signQuoteToken = (payload: QuoteTokenPayload, secret: string) => {
   return sign(payload, secret, {
     algorithm: "HS256",
-    expiresIn: "1d",
+    expiresIn: "60s",
   });
 };
 
