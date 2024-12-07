@@ -10,6 +10,7 @@ export default function useGetQuote() {
     queryKey: ["quote"],
     queryFn: getQuote,
     staleTime: 0,
+    retry: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchInterval: false,
