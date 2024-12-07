@@ -28,7 +28,7 @@ app.use("*", logger());
 app.use("*", prettyJSON());
 app.use("*", cors({ origin: process.env.NEXT_PUBLIC_APP_URL! }));
 app.use("*", csrf({ origin: process.env.NEXT_PUBLIC_APP_URL! }));
-app.use("*", secureHeaders({ xFrameOptions: false, xXssProtection: false }));
+app.use("*", secureHeaders({ xFrameOptions: true, xXssProtection: true }));
 app.use(prismaMiddleware);
 app.use(async (c, next) => {
   const {

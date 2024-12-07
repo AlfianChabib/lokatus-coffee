@@ -9,10 +9,10 @@ export default function useGetQuote() {
   } = useQuery({
     queryKey: ["quote"],
     queryFn: getQuote,
-    staleTime: Infinity,
+    staleTime: 0,
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchInterval: undefined,
+    refetchOnReconnect: true,
+    refetchInterval: false,
   });
 
   return { quoteResult, isLoading, isError };

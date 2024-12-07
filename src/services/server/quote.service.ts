@@ -106,6 +106,7 @@ export const postMood = async (mood: Mood, c: Context) => {
     httpOnly: true,
     sameSite: "lax",
     ...(isDev ? { maxAge: 60 * 60 } : { expires: getNextDay() }),
+    // expires: getNextDay(),
     secure: !isDev,
   });
 };
